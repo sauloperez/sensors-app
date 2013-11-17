@@ -1,5 +1,7 @@
 == Sensor App
 
+Sensor App is the chosen webapp for the Teambox fullstack job position homework. 
+
 This README file documents the necessary steps to get the
 application up and running.
 
