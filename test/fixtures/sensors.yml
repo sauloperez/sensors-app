@@ -26,3 +26,9 @@ no_active_set:
   latitude: 2.33
   longitude: 4.12
   type: "solar"
+
+valid:
+  latitude: 1.22
+  longitude: 2.33
+  type: "solar"
+  active: true
