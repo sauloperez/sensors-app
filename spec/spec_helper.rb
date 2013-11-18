@@ -12,6 +12,18 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 
+module APIHelper
+  include Rack::Test::Methods
+
+  def body
+    @body ||= JSON.parse(last_response.body)
+  end
+ 
+  def app
+    Rails.application
+  end
+end
+
 RSpec.configure do |config|
   # ## Mock Framework
   #
@@ -20,9 +32,6 @@ RSpec.configure do |config|
   # config.mock_with :mocha
   # config.mock_with :flexmock
   # config.mock_with :rr
-
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -39,4 +48,7 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = "random"
+
+  # Custom helper for api scopes
+  config.include APIHelper, api: true
 end

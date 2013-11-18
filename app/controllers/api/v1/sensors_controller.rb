@@ -1,62 +1,57 @@
-class SensorsController < ApplicationController
+class API::V1::SensorsController < ApplicationController
   before_action :set_sensor, only: [:show, :edit, :update, :destroy]
 
-  # GET /sensors
-  # GET /sensors.json
+  # GET /api/v1/sensors
+  # GET /api/v1/sensors.json
   def index
     @sensors = Sensor.all
   end
 
-  # GET /sensors/1
-  # GET /sensors/1.json
+  # GET /api/v1/sensors/1
+  # GET /api/v1/sensors/1.json
   def show
   end
 
-  # GET /sensors/new
+  # GET /api/v1/sensors/new
   def new
     @sensor = Sensor.new
   end
 
-  # GET /sensors/1/edit
+  # GET /api/v1/sensors/1/edit
   def edit
   end
 
-  # POST /sensors
-  # POST /sensors.json
+  # POST /api/v1/sensors
+  # POST /api/v1/sensors.json
   def create
     @sensor = Sensor.new(sensor_params)
 
     respond_to do |format|
       if @sensor.save
-        format.html { redirect_to @sensor, notice: 'Sensor was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @sensor }
+        format.json { render action: 'show', status: :created, location: [:api, :v1, @sensor] }
       else
-        format.html { render action: 'new' }
         format.json { render json: @sensor.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # PATCH/PUT /sensors/1
-  # PATCH/PUT /sensors/1.json
+  # PATCH/PUT /api/v1/sensors/1
+  # PATCH/PUT /api/v1/sensors/1.json
   def update
     respond_to do |format|
       if @sensor.update(sensor_params)
-        format.html { redirect_to @sensor, notice: 'Sensor was successfully updated.' }
         format.json { head :no_content }
       else
-        format.html { render action: 'edit' }
         format.json { render json: @sensor.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /sensors/1
-  # DELETE /sensors/1.json
+  # DELETE /api/v1/sensors/1
+  # DELETE /api/v1/sensors/1.json
   def destroy
     @sensor.destroy
     respond_to do |format|
-      format.html { redirect_to sensors_url }
       format.json { head :no_content }
     end
   end

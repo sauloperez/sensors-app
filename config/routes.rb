@@ -1,5 +1,11 @@
 SensorsApp::Application.routes.draw do
-  resources :sensors
+
+  # Make API URLs start with /api/v1/
+  namespace :api, :defaults => {:format => :json} do
+    namespace :v1 do
+      resources :sensors
+    end
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
