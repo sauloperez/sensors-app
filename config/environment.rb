@@ -1,5 +1,5 @@
 # Set the proper environment used
-ENV['RAILS_ENV'] = 'development'
+ENV['RAILS_ENV'] ||= 'development'
 
 # Load the rails application.
 require File.expand_path('../application', __FILE__)
