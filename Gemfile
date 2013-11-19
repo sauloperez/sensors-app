@@ -12,14 +12,11 @@ gem 'sass-rails', '~> 4.0.0.rc1'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 
-# Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
-
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
-gem 'jquery-rails'
+gem 'jquery-rails', '~> 2.1.3'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
@@ -27,10 +24,25 @@ gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.5.2'
 
+# Use Underscore library for the Backbone app
+gem "underscore-rails", "~> 1.5.1"
+
+# Use EJS to precompile the underscore templates before sending them to the client
+gem "ejs"
+
+# Use Backbone Library to develop the single-page app
+gem "rails-backbone", "~> 0.9.10"
+
+# Enhance Backbone with Marionette
+gem "marionette-rails", "~> 1.2.3"
+
+# Use Twitter Bootstrap 3 in Sass flavour
+gem "bootstrap-sass", "~> 3.0.2.1"
+
 # Test the API with RSpec
 group :development, :test do
   gem 'rspec-rails', '~> 2.0'
-  gem "factory_girl_rails", "~> 4.0" 
+  gem "factory_girl_rails", "~> 4.0"
 end
 
 group :doc do

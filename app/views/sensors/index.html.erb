@@ -1,0 +1,5 @@
+<div id="app" class="container">
+  <%= javascript_tag do %>
+    $(function() { SensorApp.start({ sensors: <%== @sensors.to_json %> }); });
+  <% end %>
+</div>
