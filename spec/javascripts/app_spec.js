@@ -1,8 +1,9 @@
 describe("SensorApp", function() {
-  var app;
+  var app = window.SensorApp;
 
-  beforeEach(function() {
-    app = window.SensorApp;
+  afterEach(function() {
+    Backbone.history.stop();
+    app.Sensor.stop();
   });
 
   it("should be available", function() {
@@ -28,19 +29,20 @@ describe("SensorApp", function() {
     });
 
     it("should allow to disable data bootstraping", function() {
-      var options = { test: 'a' };
-      methodSpy = sinon.spy(app.Sensor, "start")
+      var data,
+          options = { config: { bootstrap: false } };
 
-      app.config.bootstrap = false;
+      app.Sensor.on("start", function(options) {
+        data = options;
+      });
       app.start(options);
-
-      expect(methodSpy).not.toHaveBeenCalledWith(options);
-      methodSpy.restore();
+      expect(data.config.bootstrap).toBe(false);
     });
   });
 
   describe("on start", function() {
     it("should start the Sensor module", function() {
+      app.Sensor.stop();
       var methodSpy = sinon.spy(app.Sensor, "start");
       app.start();
       expect(methodSpy).toHaveBeenCalled();

@@ -9,7 +9,7 @@ describe("SensorApp.Sensor", function() {
     expect(module).toBeDefined();
   });
 
-  describe("SensorApp.Sensor.Controller", function() {
+  describe("Controller", function() {
 
     describe("starting", function() {
       var methodSpy;
@@ -19,30 +19,63 @@ describe("SensorApp.Sensor", function() {
       });
 
       afterEach(function() {
-        methodSpy.restore();
+        delete SensorApp.Sensor.Controller.collection;
         module.stop();
       });
 
-      describe("the sensor list", function() {
-        it("should be populated whether there's bootstraped data", function() {
-          methodSpy = sinon.spy(SensorApp.Sensor.Controller, "_showSensorList");
+      describe("when bootstrap is enabled", function() {
 
-          var sensors = [BackboneFactory.create("sensor"), BackboneFactory.create("sensor")], 
-              collection = new module.SensorCollection(sensors),
-              options = { models: sensors };
+        it("an array of models should be passed in", function() {
+          var options = { config: { bootstrap: true } };
 
-          module.start(options);
-          expect(methodSpy).toHaveBeenCalledWithExactly(options.models);
+          expect(function() { 
+            module.start(options); 
+          }).toThrow(new Error("A model array must be specified"));
         });
 
-        it("should be empty otherwise", function() {
-          methodSpy = sinon.spy(SensorApp.Sensor.Controller, "_showSensorList");
-          module.start();
-          expect(methodSpy).toHaveBeenCalledWith();
+        it("the sensor collection should be populated", function() {
+          var sensors = [BackboneFactory.create("sensor"), BackboneFactory.create("sensor")], 
+              options = { 
+                config: { bootstrap: true }, 
+                models: sensors 
+              };
+
+          module.start(options);
+          expect(SensorApp.Sensor.Controller.collection).toBeTruthy();
+        });
+      });
+
+      describe("when bootstrap is disabled", function() {
+        it("the sensor collection should not exist", function() {
+          var options = { config: { bootstrap: false } };
+          module.start(options);
+          expect(SensorApp.Sensor.Controller.collection).toBeFalsy();
         });
       });
       
     });
 
+  });
+
+  xdescribe("Router", function() {
+    var router, methodSpy;
+
+    beforeEach(function() {
+      // // Ensure the URL is different for each test
+      // router.navigate("elsewhere", { trigger: false, replace: false });
+    });
+    
+    it("fires the index route with a blank hash", function() {
+      // Backbone.history.start({ silent: true, pushState: true });
+
+      // // Ensure the URL is different for each test
+      Backbone.history.start({ silent: true, pushState: true });
+
+      Backbone.history.navigate("elsewhere", { trigger: false, replace: false });
+
+      methodSpy = sinon.spy(module.Controller, "start");
+      Backbone.history.navigate("", { trigger: true });
+      expect(methodSpy).toHaveBeenCalledOnce();
+    });
   });
 });

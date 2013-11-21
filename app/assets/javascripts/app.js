@@ -3,7 +3,7 @@ SensorApp = (function(Backbone, Marionette) {
 
   // Integrate JST into Marionette
   // Read more: https://github.com/marionettejs/backbone.marionette/wiki/Using-jst-templates-with-marionette
-  Backbone.Marionette.Renderer.render = function(template, data){
+  Backbone.Marionette.Renderer.render = function(template, data) {
     if (!JST[template]) throw "Template '" + template + "' not found!";
     return JST[template](data);
   }
@@ -21,18 +21,18 @@ SensorApp = (function(Backbone, Marionette) {
     mainRegion: '#main'
   });
 
-  App.on("start", function(options) {
+  // Inizalization
+  App.on('initialize:before', function (options) {
+
     // Overwrite the config defaults
     if (options && options.config) {
       _.extend(App.config, options.config);
-    }    
+    }
+    App.Sensor.start(options);
+  });
 
-    if (App.config.bootstrap) {
-      App.Sensor.start(options);
-    }
-    else {
-      App.Sensor.start();
-    }
+  App.on('initialize:after', function (options) {
+    Backbone.history.start();
   });
 
   return App;
