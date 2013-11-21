@@ -10,20 +10,25 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     }
   });
 
+  this.SensorModel = Backbone.Model.extend({ });
+  this.SensorCollection = Backbone.Collection.extend({
+    model: Sensor.SensorModel
+  });
+
   this.Controller = {
-    start: function() {
-      this._showSensorList();
+    start: function(options) {
+      this._showSensorList(options.models || {});
     },
 
-    _showSensorList: function() {
+    _showSensorList: function(models) {
       var layout = new App.SensorViews.SensorLayout();
       App.mainRegion.show(layout);
     }
   };
 
   // Initialization
-  this.on("start", function() {
-    this.Controller.start();
+  this.on("start", function(options) {
+    this.Controller.start(options || {});
   });
 
   this.addInitializer(function () {

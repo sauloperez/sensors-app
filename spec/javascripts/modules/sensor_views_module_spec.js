@@ -57,6 +57,15 @@ describe("SensorApp.SensorViews", function() {
     it("should have a 'sensor-list' class", function() {
       expect(view.el.getAttribute('class')).toBe("sensor-list");
     });
+
+    it("should be populated whether a collection is provided", function() {
+      var models = [BackboneFactory.create("sensor"), BackboneFactory.create("sensor")],
+          colView = new SensorApp.SensorViews.SensorListView({ 
+            collection: new SensorApp.Sensor.SensorCollection(models)
+          });
+      colView.render();
+      expect(colView.el.getElementsByClassName('list-item').length).toBeTruthy();
+    });
   });
 
 });

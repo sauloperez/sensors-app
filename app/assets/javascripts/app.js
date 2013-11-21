@@ -20,7 +20,7 @@ SensorApp = (function(Backbone, Marionette) {
   });
 
   App.on("start", function(options){
-    console.log(options);
+    App.Sensor.start(options);
   });
 
   return App;
