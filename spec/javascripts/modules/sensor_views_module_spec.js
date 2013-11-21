@@ -17,11 +17,11 @@ describe("SensorApp.SensorViews", function() {
     });
 
     it("should have a nav region", function() {
-      expect(sensorLayout.nav).toBeDefined();
+      expect(sensorLayout.navRegion).toBeDefined();
     });
 
     it("should have a content region", function() {
-      expect(sensorLayout.content).toBeDefined();
+      expect(sensorLayout.contentRegion).toBeDefined();
     });
   });
 
@@ -29,12 +29,27 @@ describe("SensorApp.SensorViews", function() {
     var view;
 
     beforeEach(function() {
-      view = new SensorApp.SensorViews.SensorPreview();
+      var sensor = BackboneFactory.create("sensor");
+      view = new SensorApp.SensorViews.SensorPreview({
+        model: sensor
+      });
       view.render();
     });
 
     it("should create a li element", function() {
       expect(view.el.nodeName).toEqual('LI');
+    });
+
+    it("should show the sensor id", function() {
+      expect(view.el.getElementsByClassName("sensor-id").length).toBe(1);
+    });
+
+    it("should show the sensor location", function() {
+      expect(view.el.getElementsByClassName("sensor-location").length).toBe(1);
+    });
+
+    it("should show the sensor type", function() {
+      expect(view.el.getElementsByClassName("sensor-type").length).toBe(1);
     });
   });
 
@@ -66,6 +81,13 @@ describe("SensorApp.SensorViews", function() {
       colView.render();
       expect(colView.el.getElementsByClassName('list-item').length).toBeTruthy();
     });
+
+    it("should show an empty list otherwise", function() {
+      var colView = new SensorApp.SensorViews.SensorListView();
+      colView.render();
+      expect(colView.el.getElementsByClassName('no-sensor-items').length).toBe(1);
+    });
   });
+
 
 });

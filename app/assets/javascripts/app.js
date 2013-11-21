@@ -10,17 +10,29 @@ SensorApp = (function(Backbone, Marionette) {
 
   var App = new Marionette.Application();
 
+  // Global configuration
+  App.config = {
+    bootstrap: true
+  };
+
+  // Regions
   App.addRegions({
     headerRegion: '#header',
     mainRegion: '#main'
   });
 
-  App.addInitializer(function() {
-    console.log("init");
-  });
+  App.on("start", function(options) {
+    // Overwrite the config defaults
+    if (options && options.config) {
+      _.extend(App.config, options.config);
+    }    
 
-  App.on("start", function(options){
-    App.Sensor.start(options);
+    if (App.config.bootstrap) {
+      App.Sensor.start(options);
+    }
+    else {
+      App.Sensor.start();
+    }
   });
 
   return App;

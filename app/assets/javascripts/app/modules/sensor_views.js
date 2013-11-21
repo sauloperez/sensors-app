@@ -2,11 +2,12 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
 
   // Main Sensor module layout
   this.SensorLayout = Marionette.Layout.extend({
-    template: "app/templates/sensors/index",
+    template: "app/templates/sensors/layout",
+    className: "sensor-layout",
 
     regions: {
-      nav: "#nav",
-      content: "#content"
+      navRegion: "#nav",
+      contentRegion: "#content"
     }
   });
 
@@ -16,10 +17,16 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     className: "list-item sensor-list-item"
   });
 
+  this.NoSensorItemsView = Marionette.ItemView.extend({
+    template: "app/templates/sensors/no_items",
+    className: "no-sensor-items"
+  });
+
   this.SensorListView = Marionette.CollectionView.extend({
-    itemView: this.SensorPreview,
     tagName: "ul",
     id: "sensor-list",
-    className: "sensor-list"
+    className: "sensor-list",
+    itemView: this.SensorPreview,
+    emptyView: this.NoSensorItemsView
   });
 });

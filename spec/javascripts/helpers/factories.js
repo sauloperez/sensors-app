@@ -4,4 +4,8 @@ BackboneFactory.define_sequence('sensor', SensorApp.Sensor.SensorModel, function
   // }
 });
 
-BackboneFactory.define('sensor', SensorApp.Sensor.SensorModel);
+BackboneFactory.define('sensor', SensorApp.Sensor.SensorModel, function() {
+  return {
+    type: "solar"
+  }
+});

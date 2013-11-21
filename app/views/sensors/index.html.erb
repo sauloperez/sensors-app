@@ -1,5 +1,12 @@
 <div id="app" class="container">
+  <header id="header"></header>
+  <section id="main"></section>
   <%= javascript_tag do %>
-    $(function() { SensorApp.start({ sensors: <%== @sensors.to_json %> }); });
+    $(function() { SensorApp.start({ 
+      config: {
+        bootstrap: true
+      },
+      models: <%== @sensors.to_json %> 
+    }); });
   <% end %>
 </div>
