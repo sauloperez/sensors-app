@@ -48,6 +48,9 @@ group :development, :test do
   # Only way to make jasmine 1.3.x work with Rails 4. Read more: https://github.com/pivotal/jasmine-gem/issues/159
   gem 'jasmine', github: 'pivotal/jasmine-gem', ref: 'e810540'
   gem 'jasmine-core', '1.3.1'
+
+  # Use Random location to get dummy locations
+  gem 'random-location'
 end
 
 group :doc do
