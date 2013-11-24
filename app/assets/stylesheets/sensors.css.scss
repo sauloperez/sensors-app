@@ -1,3 +1,64 @@
-// Place all the styles related to the sensors controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+/* Bootstrap styles, mixins and variables */
+@import "bootstrap";
+@import "mixins";
+
+@include font-face(entypo, 'entypo/entypo', normal, $asset-pipeline: true);
+
+$list-item-background-hover: #f6faff;
+
+// Icons variables
+$icon-font: 'entypo';
+$icon-font-size: 2em;
+$icon-line-height: 0.714285714;
+$icon-color: rgba(0,0,0,0.15);
+$icon-color-hover: rgba(0,0,0,0.25);
+
+ol, ul, li {
+  margin: 0;
+  padding: 0;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+.icon {
+  padding: 2px 3px;
+  font-family: $icon-font;
+  font-size: $icon-font-size;
+  color: $icon-color;
+  &:hover {
+    text-decoration: none;
+    color: $icon-color-hover;
+  }
+}
+
+.list-item {
+  padding-right: 10px;
+  border-bottom: 1px solid #eee;
+  // @include border-radius($border-radius-base);
+  &:hover {
+    background-color: $list-item-background-hover;
+  }
+}
+
+.list-item-inner {
+  padding: 10px 0;
+  position: relative;
+  .icon {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  &:hover {
+    cursor: pointer;
+    .icon {
+      display: inline;
+    }
+  }
+}
+
+.list-item-inner .icon.edit {
+  right: 25px;
+}

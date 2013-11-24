@@ -28,16 +28,16 @@ describe("SensorApp.Sensor", function() {
         it("an array of models should be passed in", function() {
           var options = { config: { bootstrap: true } };
 
-          expect(function() { 
-            module.start(options); 
+          expect(function() {
+            module.start(options);
           }).toThrow(new Error("A model array must be specified"));
         });
 
         it("the sensor collection should be populated", function() {
-          var sensors = [BackboneFactory.create("sensor"), BackboneFactory.create("sensor")], 
-              options = { 
-                config: { bootstrap: true }, 
-                models: sensors 
+          var sensors = [BackboneFactory.create("sensor"), BackboneFactory.create("sensor")],
+              options = {
+                config: { bootstrap: true },
+                models: sensors
               };
 
           module.start(options);
@@ -52,7 +52,7 @@ describe("SensorApp.Sensor", function() {
           expect(SensorApp.Sensor.Controller.collection).toBeFalsy();
         });
       });
-      
+
     });
 
   });
@@ -61,21 +61,28 @@ describe("SensorApp.Sensor", function() {
     var router, methodSpy;
 
     beforeEach(function() {
-      // // Ensure the URL is different for each test
-      // router.navigate("elsewhere", { trigger: false, replace: false });
+      module.start();
+      router = new module.Router({
+        controller: module.Controller
+      });
+      router.navigate("elsewhere", { trigger: false });
+      if (!Backbone.History.started) {
+        Backbone.history.start({ pushState: true });
+      }
     });
-    
-    it("fires the index route with a blank hash", function() {
-      // Backbone.history.start({ silent: true, pushState: true });
 
-      // // Ensure the URL is different for each test
-      Backbone.history.start({ silent: true, pushState: true });
+    afterEach(function() {
+      module.stop();
+    });
 
-      Backbone.history.navigate("elsewhere", { trigger: false, replace: false });
+    it('has an "index" route', function () {
+        expect(router.appRoutes['']).toEqual('index');
+    });
 
-      methodSpy = sinon.spy(module.Controller, "start");
-      Backbone.history.navigate("", { trigger: true });
-      expect(methodSpy).toHaveBeenCalledOnce();
+    it('triggers the "index" route', function () {
+        methodSpy = sinon.spy(router.options.controller, "index");
+        router.navigate('', { trigger: true });
+        expect(methodSpy).toHaveBeenCalled();
     });
   });
 });

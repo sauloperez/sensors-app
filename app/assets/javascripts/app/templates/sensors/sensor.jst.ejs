@@ -1,8 +1,8 @@
 <div class="list-item-inner">
   <span class="sensor-id"><%= id %></span>
-  <span class="sensor-location"><%= location %></span>
+  <span class="sensor-location">(<%= latitude %>, <%= longitude %>)</span>
   <span class="sensor-type"><%= type %></span>
   <a href="/sensors/<%= id %>">Show</a>
-  <a href="/sensors/<%= id %>/edit">Edit</a>
-  <a href="/sensors/<%= id %>/destroy" class="destroy">Destroy</a>
+  <a href="/sensors/<%= id %>/edit" class="edit icon">&#9881;</a>
+  <a href="/sensors/<%= id %>/delete" class="delete icon">&#59177;</a>
 </div>
