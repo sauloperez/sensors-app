@@ -84,13 +84,16 @@ ol, ul {
   }
 }
 
+.icon-image {
+  font-size: 110px;
+  line-height: 80px;
+  color: $icon-color;
+} 
+
 .not-found {
-  &:before {
-    font-family: $icon-font;
-    font-size: 172px;
-    content: "\26A0";
-    line-height: 73px;
-    color: $icon-color;
-  }
+  margin-top: 100px;
   text-align: center;
+  .controls {
+    margin-top: 25px;
+  }
 }
