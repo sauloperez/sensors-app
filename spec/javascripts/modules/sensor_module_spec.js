@@ -83,4 +83,16 @@ describe("SensorApp.Sensor", function() {
       });
     });
   });
+
+  describe("Router", function() {
+    var router = new SensorApp.Sensor.Router({ controller: SensorApp.Sensor.Controller });
+
+    it("should have an 'index' route", function() {
+      expect(router.appRoutes['']).toBeTruthy();
+    });
+
+    it("should have a 'show' route", function() {
+      expect(router.appRoutes['sensors/:id']).toBeTruthy();
+    });
+  });
 });
