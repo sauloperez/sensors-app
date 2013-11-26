@@ -13,5 +13,6 @@ ref_point = [41.38563, 2.16872]
 
 6.times do |i|
   coords = RandomLocation.near_by(ref_point[0], ref_point[1], 20000)
+  coords.map! { |c| c.round(5) }
   Sensor.create(latitude: coords[0], longitude: coords[1], type: ["solar", "wind"].sample, active: [true, false].sample)
 end
