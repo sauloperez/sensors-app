@@ -53,7 +53,7 @@ describe("SensorApp.SensorViews", function() {
     });
 
     it("should store the id in a data-id attribute", function() {
-      var dataId = view.$el.find('.list-item-data').data('id');
+      var dataId = view.$el.find('.list-item-inner').data('id');
       expect(dataId).toBeTruthy();
     });
 
@@ -85,18 +85,26 @@ describe("SensorApp.SensorViews", function() {
     });
 
     describe("on click in .delete", function() {
-      var view, stub;
+      var view,
+          app = SensorApp,
+          stub = sinon.stub(Backbone.Model.prototype, 'destroy');
 
       beforeEach(function() {
-        var sensor = BackboneFactory.create("sensor");
-        view = new SensorApp.SensorViews.SensorPreview({
-          model: sensor
-        });
-        view.render();
-        setFixtures(view.$el);
+        // Set up app.mainRegion container
+        setFixtures("<div id='main'/>");
+        app.mainRegion.$el = $('#main');
 
-        stub = sinon.stub(view.model, 'destroy');
+        app.start({
+          config: { bootstrap: true },
+          models: [BackboneFactory.create("sensor")]
+        });
+        Backbone.history.navigate("", true);
+
         $('.sensor-list-item .delete').trigger('click');
+      });
+
+      afterEach(function() {
+        Backbone.history.navigate("", false);
       });
 
       it("should remove the view model", function() {
@@ -104,7 +112,7 @@ describe("SensorApp.SensorViews", function() {
       });
 
       it("should remove the view", function() {
-        expect($(document)).not.toContain(view.$el);
+        expect($(document)).not.toContain('.sensor-list-item');
       });
     });
   });

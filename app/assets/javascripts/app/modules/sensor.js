@@ -14,7 +14,8 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     appRoutes: {
       "": "index",
       "sensors": "index",
-      "sensors/:id": "show"
+      "sensors/:id": "show",
+      "sensors/:id/edit": "edit"
     }
   });
 
@@ -57,6 +58,10 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     show: function(id) {
       var view = this._showSensorView(id);
       this.layout.contentRegion.show(view);
+    },
+
+    edit: function(id) {
+
     }
   };
 

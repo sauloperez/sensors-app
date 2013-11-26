@@ -94,5 +94,9 @@ describe("SensorApp.Sensor", function() {
     it("should have a 'show' route", function() {
       expect(router.appRoutes['sensors/:id']).toBeTruthy();
     });
+
+    it("should have an 'edit' route", function() {
+      expect(router.appRoutes['sensors/:id/edit']).toBeTruthy();
+    });
   });
 });

@@ -1,12 +1,12 @@
-<div class="list-item-inner">
-  <span class="list-item-data" data-id="<%= id %>">
+<div class="list-item-inner" data-id="<%= id %>">
+  <div class="list-item-data">
     <span class="sensor-id"><%= id %></span>
     <span class="sensor-location">(<%= latitude %>, <%= longitude %>)</span>
     <span class="sensor-type"><%= type %></span>
-  </span>
-  <span class="controls">
+  </div>
+  <div class="controls">
     <button type="button" class="delete btn btn-danger btn-xs hidden">Delete</button>
     <a href="/sensors/<%= id %>/edit" class="edit icon main-action" title="Edit sensor">&#9881;</a>
     <span class="confirm-deletion icon main-action" title="Delete sensor">&#59177;</span>
-  </span>
+  </div>
 </div>

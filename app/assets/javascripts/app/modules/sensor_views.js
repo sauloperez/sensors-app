@@ -35,7 +35,7 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
 
     showSensor: function(event) {
       var selectedItem = $(event.currentTarget);
-      App.vent.trigger("sensor:show", selectedItem.data("id"));
+      App.vent.trigger("sensor:show", selectedItem.parent().data("id"));
     },
 
     deleteSensor: function(event) {
@@ -54,7 +54,6 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     toggleDelete: function() {
       if (this.ui.deleteButton.is(':visible')) {
         this.ui.deleteButton.toggleClass('hidden');
-        // this.ui.mainAction.toggleClass('hidden');
       }
     }
   });
