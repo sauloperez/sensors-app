@@ -83,6 +83,30 @@ describe("SensorApp.SensorViews", function() {
         expect(spy).toHaveBeenCalled();
       });
     });
+
+    describe("on click in .delete", function() {
+      var view, stub;
+
+      beforeEach(function() {
+        var sensor = BackboneFactory.create("sensor");
+        view = new SensorApp.SensorViews.SensorPreview({
+          model: sensor
+        });
+        view.render();
+        setFixtures(view.$el);
+
+        stub = sinon.stub(view.model, 'destroy');
+        $('.sensor-list-item .delete').trigger('click');
+      });
+
+      it("should remove the view model", function() {
+        expect(stub).toHaveBeenCalled();
+      });
+
+      it("should remove the view", function() {
+        expect($(document)).not.toContain(view.$el);
+      });
+    });
   });
 
   describe("SensorApp.SensorViews.SensorListView", function() {

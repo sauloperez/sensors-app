@@ -63,6 +63,14 @@ ol, ul {
   }
 }
 
-.list-item-inner .icon.edit {
-  right: 25px;
+.list-item-inner {
+  .icon.edit {
+    right: 25px;
+  }
+  .delete {
+    position: absolute;
+    top: 9px;
+    right: 0;
+    z-index: 1;
+  }
 }
