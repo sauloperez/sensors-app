@@ -62,7 +62,12 @@ SensorApp = (function(Backbone, Marionette) {
   });
 
   App.on('initialize:after', function (options) {
-    Backbone.history.start({ pushState: true });
+    try {
+      Backbone.history.start({ pushState: true });
+    }
+    catch (e) {
+      Backbone.history.loadUrl();
+    }
   });
 
   return App;

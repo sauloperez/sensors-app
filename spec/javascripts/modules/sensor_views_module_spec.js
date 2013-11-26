@@ -63,10 +63,17 @@ describe("SensorApp.SensorViews", function() {
       beforeEach(function() {
         // Set up app.mainRegion container
         setFixtures("<div id='main'/>");
+        app.mainRegion.$el = $('#main');
+
         app.start({
           config: { bootstrap: true },
           models: [BackboneFactory.create("sensor")]
         });
+        Backbone.history.navigate("", true);
+      });
+
+      afterEach(function() {
+        Backbone.history.navigate("", false);
       });
 
       it("should trigger a 'sensor:show' event", function() {

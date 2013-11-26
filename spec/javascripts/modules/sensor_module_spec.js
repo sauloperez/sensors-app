@@ -50,7 +50,37 @@ describe("SensorApp.Sensor", function() {
           expect(SensorApp.Sensor.Controller.collection).toBeTruthy();
         });
       });
+    });
 
+    describe("running", function() {
+      var app = SensorApp,
+          methodSpy;
+
+      beforeEach(function() {
+        methodSpy = sinon.spy(app.Sensor.Controller, 'show');
+
+        // Set up app.mainRegion container
+        setFixtures("<div id='main'/>");
+        app.mainRegion.$el = $('#main');
+
+        app.start({
+          config: { bootstrap: true },
+          models: [BackboneFactory.create("sensor")]
+        });
+        Backbone.history.navigate("", true);
+      });
+
+      afterEach(function() {
+        methodSpy.restore();
+        Backbone.history.navigate("", false);
+      });
+
+      describe("on 'sensor:show' event", function() {
+        it("should trigger the 'show' route", function() {
+          $('.list-item-data').trigger('click');
+          expect(methodSpy).toHaveBeenCalled();
+        });
+      });
     });
   });
 });
