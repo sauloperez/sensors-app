@@ -69,6 +69,10 @@ describe("SensorApp.SensorViews", function() {
           config: { bootstrap: true },
           models: [BackboneFactory.create("sensor")]
         });
+
+        // Init the layout and attach it to the DOM
+        Backbone.history.navigate("elsewhere", false);
+        app.Sensor.Controller._initlayout();
         Backbone.history.navigate("", true);
       });
 
@@ -98,6 +102,10 @@ describe("SensorApp.SensorViews", function() {
           config: { bootstrap: true },
           models: [BackboneFactory.create("sensor")]
         });
+
+        // Init the layout and attach it to the DOM
+        Backbone.history.navigate("elsewhere", false);
+        app.Sensor.Controller._initlayout();
         Backbone.history.navigate("", true);
 
         $('.sensor-list-item .delete').trigger('click');

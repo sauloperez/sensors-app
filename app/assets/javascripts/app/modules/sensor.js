@@ -31,6 +31,12 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
         this.collection = new Sensor.SensorCollection();
         this.collection.fetch();
       }
+      this._initlayout();
+    },
+
+    _initlayout: function() {
+      this.layout = new App.SensorViews.SensorLayout();
+      App.mainRegion.show(this.layout);
     },
 
     index: function() {
@@ -40,8 +46,6 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
         Backbone.history.navigate("/sensors/"+id, true);
       });
 
-      this.layout = new App.SensorViews.SensorLayout();
-      App.mainRegion.show(this.layout);
       this.layout.contentRegion.show(view);
     },
 

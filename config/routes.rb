@@ -14,6 +14,9 @@ SensorsApp::Application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'sensors#index'
 
+  # Catch all non-API routes and pass them on to the SPA
+  match '*path' => 'sensors#index', via: [:get, :post]
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
