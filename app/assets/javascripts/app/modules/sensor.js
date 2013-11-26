@@ -50,12 +50,14 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     },
 
     _showSensorView: function(id) {
-      if (!this.collection) {
-        this.start();
+      var model = this.collection.get(id),
+          view;
+      if (!model) {
+        view = new App.SensorViews.NotFoundSensorView();
       }
-      var view = new App.SensorViews.SensorView({
-        model: this.collection.get(id)
-      });
+      else {
+        view = new App.SensorViews.SensorView({ model: model });
+      }
       return view;
     },
 

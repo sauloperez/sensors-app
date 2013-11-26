@@ -188,4 +188,21 @@ describe("SensorApp.SensorViews", function() {
       expect(view.el.getElementsByClassName("sensor-type").length).toBe(1);
     });
   });
+
+  describe("SensorApp.SensorViews.NotFoundSensorView", function() {
+    var view;
+
+    beforeEach(function() {
+      view = new SensorApp.SensorViews.NotFoundSensorView();
+      view.render();
+    });
+
+    it("should create a div element", function() {
+      expect(view.el.nodeName).toEqual('DIV');
+    });
+
+    it("should have a 'not-found-sensor' class", function() {
+      expect(view.el.getAttribute('class')).toBe("not-found");
+    });
+  });
 });

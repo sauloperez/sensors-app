@@ -11,6 +11,12 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     }
   });
 
+  this.NotFoundSensorView = Marionette.ItemView.extend({
+    template: "app/templates/sensors/not_found",
+    tagName: "div",
+    className: "not-found"
+  });
+
   this.SensorView = Marionette.ItemView.extend({
     template: "app/templates/sensors/show",
     tagName: "div",

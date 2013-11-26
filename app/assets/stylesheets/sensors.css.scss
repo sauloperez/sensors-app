@@ -72,7 +72,7 @@ ol, ul {
   }
 }
 
-.list-item-inner {
+.controls {
   .icon.edit {
     right: 25px;
   }
@@ -82,4 +82,15 @@ ol, ul {
     right: 0;
     z-index: 1;
   }
+}
+
+.not-found {
+  &:before {
+    font-family: $icon-font;
+    font-size: 172px;
+    content: "\26A0";
+    line-height: 73px;
+    color: $icon-color;
+  }
+  text-align: center;
 }
