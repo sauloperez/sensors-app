@@ -11,15 +11,30 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     }
   });
 
+  this.SensorView = Marionette.ItemView.extend({
+    template: "app/templates/sensors/show",
+    tagName: "div",
+    className: "sensor"
+  });
+
   this.SensorPreview = Marionette.ItemView.extend({
-    template: "app/templates/sensors/sensor",
+    template: "app/templates/sensors/preview",
     tagName: "li",
-    className: "list-item sensor-list-item"
+    className: "list-item sensor-list-item",
+
+    events: {
+      "click .list-item-data": "show"
+    },
+
+    show: function(event) {
+      var selectedItem = $(event.currentTarget);
+      App.vent.trigger("sensor:show", selectedItem.data("id"));
+    }
   });
 
   this.NoSensorItemsView = Marionette.ItemView.extend({
     template: "app/templates/sensors/no_items",
-    className: "no-sensor-items"
+    className: "no-items no-sensor-items"
   });
 
   this.SensorListView = Marionette.CollectionView.extend({

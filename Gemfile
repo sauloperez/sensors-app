@@ -51,6 +51,9 @@ group :development, :test do
 
   # Use Random location to get dummy locations
   gem 'random-location'
+
+  # Load HTML content to be used by your tests
+  gem "jasmine-jquery-rails", "~> 1.5.9"
 end
 
 group :doc do

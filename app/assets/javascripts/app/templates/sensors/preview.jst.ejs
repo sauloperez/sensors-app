@@ -1,0 +1,9 @@
+<div class="list-item-inner">
+  <div class="list-item-data" data-id="<%= id %>">
+    <span class="sensor-id"><%= id %></span>
+    <span class="sensor-location">(<%= latitude %>, <%= longitude %>)</span>
+    <span class="sensor-type"><%= type %></span>
+  </div>
+  <a href="/sensors/<%= id %>/edit" class="edit icon" title="Edit sensor">&#9881;</a>
+  <a href="/sensors/<%= id %>/delete" class="delete icon" title="Delete sensor">&#59177;</a>
+</div>

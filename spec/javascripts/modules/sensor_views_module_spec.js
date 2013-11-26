@@ -51,6 +51,31 @@ describe("SensorApp.SensorViews", function() {
     it("should show the sensor type", function() {
       expect(view.el.getElementsByClassName("sensor-type").length).toBe(1);
     });
+
+    it("should store the id in a data-id attribute", function() {
+      var dataId = view.$el.find('.list-item-data').data('id');
+      expect(dataId).toBeTruthy();
+    });
+
+    describe("on click in .list-item-data", function() {
+      var app = SensorApp;
+
+      beforeEach(function() {
+        // Set up app.mainRegion container
+        setFixtures("<div id='main'/>");
+        app.start({
+          config: { bootstrap: true },
+          models: [BackboneFactory.create("sensor")]
+        });
+      });
+
+      it("should trigger a 'sensor:show' event", function() {
+        var spy = sinon.spy();
+        app.vent.on('sensor:show', spy);
+        $('.list-item-data').trigger('click');
+        expect(spy).toHaveBeenCalled();
+      });
+    });
   });
 
   describe("SensorApp.SensorViews.SensorListView", function() {
@@ -75,7 +100,7 @@ describe("SensorApp.SensorViews", function() {
 
     it("should be populated whether a collection is provided", function() {
       var models = [BackboneFactory.create("sensor"), BackboneFactory.create("sensor")],
-          colView = new SensorApp.SensorViews.SensorListView({ 
+          colView = new SensorApp.SensorViews.SensorListView({
             collection: new SensorApp.Sensor.SensorCollection(models)
           });
       colView.render();
@@ -89,5 +114,31 @@ describe("SensorApp.SensorViews", function() {
     });
   });
 
+  describe("SensorApp.SensorViews.SensorView", function() {
+    var view;
 
+    beforeEach(function() {
+      var sensor = BackboneFactory.create("sensor");
+      view = new SensorApp.SensorViews.SensorView({
+        model: sensor
+      });
+      view.render();
+    });
+
+    it("should create a div element", function() {
+      expect(view.el.nodeName).toEqual('DIV');
+    });
+
+    it("should show the sensor id", function() {
+      expect(view.el.getElementsByClassName("sensor-id").length).toBe(1);
+    });
+
+    it("should show the sensor location", function() {
+      expect(view.el.getElementsByClassName("sensor-location").length).toBe(1);
+    });
+
+    it("should show the sensor type", function() {
+      expect(view.el.getElementsByClassName("sensor-type").length).toBe(1);
+    });
+  });
 });
