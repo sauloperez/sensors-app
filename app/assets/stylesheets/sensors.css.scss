@@ -13,7 +13,7 @@ $icon-line-height: 0.714285714;
 $icon-color: rgba(0,0,0,0.15);
 $icon-color-hover: rgba(0,0,0,0.25);
 
-$controls-width: 45px;
+$list-item-controls-width: 45px;
 
 ol, ul, li {
   margin: 0;
@@ -35,14 +35,28 @@ ol, ul {
   }
 }
 
+.icon-image {
+  font-family: $icon-font;
+  font-size: 160px;
+  line-height: 80px;
+  color: $icon-color;
+}
+
 .no-items {
   text-align: center;
+}
+
+.not-found {
+  margin-top: 100px;
+  text-align: center;
+  .controls {
+    margin-top: 25px;
+  }
 }
 
 .list-item {
   padding-right: 10px;
   border-bottom: 1px solid #eee;
-  // @include border-radius($border-radius-base);
   &:hover {
     background-color: $list-item-background-hover;
   }
@@ -52,7 +66,7 @@ ol, ul {
   padding: 10px 0;
   position: relative;
   .list-item-data {
-    margin-right: $controls-width;
+    margin-right: $list-item-controls-width;
   }
   .icon {
     display: none;
@@ -68,7 +82,7 @@ ol, ul {
   }
   .controls {
     float: right;
-    width: $controls-width;
+    width: $list-item-controls-width;
   }
 }
 
@@ -84,16 +98,6 @@ ol, ul {
   }
 }
 
-.icon-image {
-  font-size: 110px;
-  line-height: 80px;
-  color: $icon-color;
-} 
-
-.not-found {
-  margin-top: 100px;
-  text-align: center;
-  .controls {
-    margin-top: 25px;
-  }
+form .controls {
+  float: right;
 }
