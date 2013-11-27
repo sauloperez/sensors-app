@@ -23,6 +23,34 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     className: "sensor"
   });
 
+  this.EditSensorView = Marionette.ItemView.extend({
+    template: "app/templates/sensors/edit",
+    tagName: "div",
+    className: "edit-sensor",
+
+    events: {
+      "submit form": "saveSensor"
+    },
+
+    ui: {
+      latitude: '#sensor-latitude',
+      longitude: '#sensor-longitude',
+      type: '#sensor-type'
+    },
+
+    initialize: function() {
+      this.listenTo(this.model, 'change', this.render);
+    },
+
+    saveSensor: function(event) {
+      event.preventDefault();
+      this.model.set('latitude', parseFloat(this.ui.latitude.val()));
+      this.model.set('longitude', parseFloat(this.ui.longitude.val()));
+      this.model.set('type', this.ui.type.val());
+      this.model.save();
+    }
+  });
+
   this.SensorPreview = Marionette.ItemView.extend({
     template: "app/templates/sensors/preview",
     tagName: "li",

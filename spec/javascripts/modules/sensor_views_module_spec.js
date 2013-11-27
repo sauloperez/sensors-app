@@ -189,6 +189,119 @@ describe("SensorApp.SensorViews", function() {
     });
   });
 
+  describe("SensorApp.SensorViews.EditSensorView", function() {
+    var view;
+
+    beforeEach(function() {
+      var sensor = BackboneFactory.create("sensor");
+      view = new SensorApp.SensorViews.EditSensorView({
+        model: sensor
+      });
+      view.render();
+    });
+
+    it("should create a div element", function() {
+      expect(view.el.nodeName).toEqual('DIV');
+    });
+
+    it("should contain a form", function() {
+      expect(view.$el.find('form').length).toBeTruthy();
+    });
+
+    it("should show an input field for the latitude", function() {
+      expect(view.$el.find("input#sensor-latitude").length).toBeTruthy();    
+    });
+
+    it("should show an input field for the longitude", function() {
+      expect(view.$el.find("input#sensor-longitude").length).toBeTruthy();    
+    });
+
+    describe("sensor type", function() {
+
+      it("should show an select field for the type", function() {
+        expect(view.$el.find("select#sensor-type").length).toBeTruthy();    
+      });
+
+      it("should render an option for each type", function() {
+        var types = view.model.get('types'),
+            values = [];
+        
+        view.$el.find("option").each(function(index) {
+          values.push($(this).val());
+        });
+        $.each(types, function(i, type) {
+          expect($.inArray(type, values) > -1).toBe(true);
+        });
+      })
+    });
+
+    describe("model update", function() {
+      var changed,
+          editView = new SensorApp.SensorViews.EditSensorView({
+            model: BackboneFactory.create("sensor")
+          }).render();
+
+      beforeEach(function() {
+        changed = false;
+        server = sinon.fakeServer.create();
+        server.respondWith("/sensors/"+editView.model.id, "");
+
+        editView.model.url = '/sensors/' + editView.model.id;
+      });
+
+      afterEach(function() {
+        editView.stopListening(editView.model);
+        server.restore();
+      });
+
+      it("should update the latitude", function() {
+        editView.listenTo(editView.model, "sync", function() {
+          if (this.model.get('latitude') && this.model.get('latitude') == 1.100) {
+            changed = true;
+          }
+        });
+        editView.ui.latitude.val(1.100);
+        editView.$el.find('form').submit();
+        server.respond();
+
+        expect(changed).toBe(true);
+
+      });
+
+      it("should update the longitude", function() {
+        editView.listenTo(editView.model, "sync", function() {
+          if (this.model.get('longitude') && this.model.get('longitude') == 1.100) {
+            changed = true;
+          }
+        });
+        editView.ui.longitude.val(1.100);
+        editView.$el.find('form').submit();
+        server.respond();
+
+        expect(changed).toBe(true);
+      });
+
+      it("should update the type", function() {
+        editView.listenTo(editView.model, "sync", function() {
+          // Why does 'type' not appear in changed hash??
+          // i.e., model._previousAttributes == model.attributes
+          if (this.model.get('type') && this.model.get('type') == 'wind') {
+            changed = true;
+          }
+        });
+        editView.ui.type.val("wind");
+        editView.$el.find('form').submit();
+        server.respond();
+
+        expect(changed).toBe(true);
+      });
+
+      it("should")
+    });
+
+    
+  });
+
   describe("SensorApp.SensorViews.NotFoundSensorView", function() {
     var view;
 

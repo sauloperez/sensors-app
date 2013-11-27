@@ -2,7 +2,11 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
   this.startWithParent = false;
 
   // Module model and collection
-  this.SensorModel = Backbone.Model.extend({ });
+  this.SensorModel = Backbone.Model.extend({ 
+    defaults: {
+      types: ["solar", "wind"]
+    }
+  });
   this.SensorCollection = Backbone.Collection.extend({
     model: Sensor.SensorModel,
     url: "/api/v1/sensors"
@@ -66,8 +70,24 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
       this.layout.contentRegion.show(view);
     },
 
-    edit: function(id) {
+    _editSensorView: function(id) {
+      var model = this.collection.get(id),
+          view;
+      if (!model) {
+        view = new App.SensorViews.NotFoundSensorView();
+      }
+      else {
+        view = new App.SensorViews.EditSensorView({ model: model });
+      }
+      return view;
+    },
 
+    edit: function(id) {
+      var view = this._editSensorView(id);
+      view.model.on("sync", function() {
+        Backbone.history.navigate("/", true);
+      });
+      this.layout.contentRegion.show(view);
     }
   };
 

@@ -1,10 +1,23 @@
-<h1>Edit sensor</h1>
-
-<form id="edit-sensor" name="sensor">
-  <div class="actions">
-    <input type="submit" value="Update Sensor" />
+<form>
+  <div class="form-group">
+    <label for="sensor-latitude">Latitude</label>
+    <input type="text" class="form-control" id="sensor-latitude" placeholder="Coordinate" value="<%= latitude %>">
+  </div>
+  <div class="form-group">
+    <label for="sensor-longitude">Longitude</label>
+    <input type="text" class="form-control" id="sensor-longitude" placeholder="Coordinate" value="<%= longitude %>">
+  </div>
+  <div class="form-group">
+    <label for="sensor-type">Type</label>
+    <select class="form-control" id="sensor-type">
+      <% _(types).each(function(t) { %>
+        <option value="<%= t %>" <% if (t == type) { %> selected <% } %>><%= t %></option>
+      <% }); %>
+    </select>
   </div>
 
+  <div class="controls">
+    <input type="submit" class="btn btn-primary" value="Save">
+    <a href="/sensors" class="btn btn-default">Back</a>
+  </div>
 </form>
-
-<a href="#/index">Back</a>
