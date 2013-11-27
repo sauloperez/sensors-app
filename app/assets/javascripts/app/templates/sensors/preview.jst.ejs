@@ -3,6 +3,11 @@
     <span class="sensor-id"><%= id %></span>
     <span class="sensor-location">(<%= latitude %>, <%= longitude %>)</span>
     <span class="sensor-type"><%= type %></span>
+    <% if (active) { %>
+      <span class="sensor-active label label-success">active</span>
+    <% } else { %>
+      <span class="sensor-active label label-danger">not active</span>
+    <% } %>
   </div>
   <div class="controls">
     <button type="button" class="delete btn btn-danger btn-xs hidden">Delete</button>

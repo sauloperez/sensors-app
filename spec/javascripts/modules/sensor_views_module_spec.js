@@ -52,6 +52,10 @@ describe("SensorApp.SensorViews", function() {
       expect(view.el.getElementsByClassName("sensor-type").length).toBe(1);
     });
 
+    it("should show whether the sensor is active", function() {
+      expect(view.el.getElementsByClassName("sensor-active").length).toBe(1);
+    });
+
     it("should store the id in a data-id attribute", function() {
       var dataId = view.$el.find('.list-item-inner').data('id');
       expect(dataId).toBeTruthy();
@@ -177,15 +181,19 @@ describe("SensorApp.SensorViews", function() {
     });
 
     it("should show the sensor id", function() {
-      expect(view.el.getElementsByClassName("sensor-id").length).toBe(1);
+      expect(view.$el.find(".sensor-id").length).toBe(1);
     });
 
     it("should show the sensor location", function() {
-      expect(view.el.getElementsByClassName("sensor-location").length).toBe(1);
+      expect(view.$el.find(".sensor-location").length).toBe(1);
     });
 
     it("should show the sensor type", function() {
-      expect(view.el.getElementsByClassName("sensor-type").length).toBe(1);
+      expect(view.$el.find(".sensor-type").length).toBe(1);
+    });
+
+    it("should show whether it's active", function() {
+      expect(view.$el.find(".sensor-active").length).toBe(1);
     });
   });
 
@@ -216,23 +224,28 @@ describe("SensorApp.SensorViews", function() {
       expect(view.$el.find("input#sensor-longitude").length).toBeTruthy();    
     });
 
-    describe("sensor type", function() {
+    it("should show a select field for the type", function() {
+      expect(view.$el.find("select#sensor-type").length).toBeTruthy();    
+    });
 
-      it("should show an select field for the type", function() {
-        expect(view.$el.find("select#sensor-type").length).toBeTruthy();    
+    it("should render an option for each type", function() {
+      var types = view.model.get('types'),
+          values = [];
+      
+      view.$el.find("option").each(function(index) {
+        values.push($(this).val());
       });
+      $.each(types, function(i, type) {
+        expect($.inArray(type, values) > -1).toBe(true);
+      });
+    });
 
-      it("should render an option for each type", function() {
-        var types = view.model.get('types'),
-            values = [];
-        
-        view.$el.find("option").each(function(index) {
-          values.push($(this).val());
-        });
-        $.each(types, function(i, type) {
-          expect($.inArray(type, values) > -1).toBe(true);
-        });
-      })
+    it("should show a radio input field to set active true", function() {
+      expect(view.$el.find("input[type=radio]#sensor-active-true").length).toBe(1);    
+    });
+
+    it("should show a radio input field to set active false", function() {
+      expect(view.$el.find("input[type=radio]#sensor-active-false").length).toBe(1);    
     });
 
     describe("model update", function() {
@@ -256,7 +269,7 @@ describe("SensorApp.SensorViews", function() {
 
       it("should update the latitude", function() {
         editView.listenTo(editView.model, "sync", function() {
-          if (this.model.get('latitude') && this.model.get('latitude') == 1.100) {
+          if (this.model.get('latitude') && this.model.get('latitude') === 1.100) {
             changed = true;
           }
         });
@@ -270,7 +283,7 @@ describe("SensorApp.SensorViews", function() {
 
       it("should update the longitude", function() {
         editView.listenTo(editView.model, "sync", function() {
-          if (this.model.get('longitude') && this.model.get('longitude') == 1.100) {
+          if (this.model.get('longitude') === 1.100) {
             changed = true;
           }
         });
@@ -283,13 +296,24 @@ describe("SensorApp.SensorViews", function() {
 
       it("should update the type", function() {
         editView.listenTo(editView.model, "sync", function() {
-          // Why does 'type' not appear in changed hash??
-          // i.e., model._previousAttributes == model.attributes
-          if (this.model.get('type') && this.model.get('type') == 'wind') {
+          if (this.model.get('type') === 'wind') {
             changed = true;
           }
         });
         editView.ui.type.val("wind");
+        editView.$el.find('form').submit();
+        server.respond();
+
+        expect(changed).toBe(true);
+      });
+
+      it("should update the status", function() {
+        editView.listenTo(editView.model, "sync", function() {
+          if (this.model.get('active') === false) {
+            changed = true;
+          }
+        });
+        editView.ui.active.find('#sensor-active-false').attr('checked', false).trigger('click');
         editView.$el.find('form').submit();
         server.respond();
 
@@ -315,7 +339,7 @@ describe("SensorApp.SensorViews", function() {
     });
 
     it("should have a 'not-found-sensor' class", function() {
-      expect(view.el.getAttribute('class')).toBe("not-found");
+      expect(view.$el.hasClass('not-found')).toBe(true);
     });
   });
 });

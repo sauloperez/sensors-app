@@ -14,7 +14,7 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
   this.NotFoundSensorView = Marionette.ItemView.extend({
     template: "app/templates/sensors/not_found",
     tagName: "div",
-    className: "not-found"
+    className: "no-data not-found"
   });
 
   this.SensorView = Marionette.ItemView.extend({
@@ -35,11 +35,17 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     ui: {
       latitude: '#sensor-latitude',
       longitude: '#sensor-longitude',
-      type: '#sensor-type'
+      type: '#sensor-type',
+      // Cache radio buttons container
+      active: '#sensor-active',
     },
 
     initialize: function() {
       this.listenTo(this.model, 'change', this.render);
+    },
+
+    _getActiveValue: function($el) {
+      return $('input[name=sensor-active]:checked').val() === 'Yes';
     },
 
     saveSensor: function(event) {
@@ -47,6 +53,7 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
       this.model.set('latitude', parseFloat(this.ui.latitude.val()));
       this.model.set('longitude', parseFloat(this.ui.longitude.val()));
       this.model.set('type', this.ui.type.val());
+      this.model.set('active', this._getActiveValue(this.ui.active));
       this.model.save();
     }
   });

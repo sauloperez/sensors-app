@@ -24,6 +24,10 @@ ol, ul {
   list-style: none;
 }
 
+.label {
+  font-weight: 200;
+}
+
 .icon {
   padding: 2px 3px;
   font-family: $icon-font;
@@ -42,13 +46,12 @@ ol, ul {
   color: $icon-color;
 }
 
-.no-items {
+.no-data {
   text-align: center;
 }
 
 .not-found {
   margin-top: 100px;
-  text-align: center;
   .controls {
     margin-top: 25px;
   }
