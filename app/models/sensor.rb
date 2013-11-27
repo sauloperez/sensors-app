@@ -10,6 +10,6 @@ class Sensor < ActiveRecord::Base
   after_initialize :set_defaults
 
   def set_defaults
-    self.active ||= true
+    self.active = true if self.active.nil?
   end
 end
