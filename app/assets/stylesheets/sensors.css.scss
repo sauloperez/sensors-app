@@ -66,9 +66,9 @@ ol, ul {
 }
 
 .list-item-inner {
-  padding: 10px 0;
   position: relative;
   .list-item-data {
+    padding: 10px 0;
     margin-right: $list-item-controls-width;
   }
   .icon {
