@@ -12,16 +12,19 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     url: "/api/v1/sensors"
   });
 
+
   // Router
   this.Router = Marionette.AppRouter.extend({
     controller: Sensor.Controller,
     appRoutes: {
       "": "index",
       "sensors": "index",
+      "sensors/create": "create",
       "sensors/:id": "show",
       "sensors/:id/edit": "edit"
     }
   });
+
 
   // Controller (Mediator pattern)
   this.Controller = {
@@ -44,13 +47,20 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     },
 
     index: function() {
-      var view = new App.SensorViews.SensorListView({ collection: this.collection });
+      var headerView = new App.SensorViews.SensorListHeaderView();
+      var contentView = new App.SensorViews.SensorListView({ collection: this.collection });
 
       App.vent.on("sensor:show", function(id) {
+        console.log("sensor:show called");
         Backbone.history.navigate("/sensors/"+id, true);
       });
+      App.vent.on("sensor:create", function() {
+        console.log("sensor:create called");
+        Backbone.history.navigate("/sensors/create", true);
+      });
 
-      this.layout.contentRegion.show(view);
+      this.layout.headerRegion.show(headerView)
+      this.layout.contentRegion.show(contentView);
     },
 
     _showSensorView: function(id) {
@@ -77,7 +87,7 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
         view = new App.SensorViews.NotFoundSensorView();
       }
       else {
-        view = new App.SensorViews.EditSensorView({ model: model });
+        view = new App.SensorViews.SensorFormView({ model: model });
       }
       return view;
     },
@@ -88,8 +98,22 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
         Backbone.history.navigate("/", true);
       });
       this.layout.contentRegion.show(view);
+    },
+
+    create: function() {
+      var self = this,
+          view = new App.SensorViews.SensorFormView({ 
+            model: new Sensor.SensorModel(),
+            collection: self.collection
+          });
+
+      this.collection.on("sync", function() {
+        Backbone.history.navigate("/", true);
+      });
+      this.layout.contentRegion.show(view);
     }
   };
+
 
   // Initialization
   this.on("before:start", function(options) {

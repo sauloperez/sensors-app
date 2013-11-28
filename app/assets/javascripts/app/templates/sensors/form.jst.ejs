@@ -1,17 +1,17 @@
 <form>
   <div class="form-group">
     <label for="sensor-latitude">Latitude</label>
-    <input type="text" class="form-control" id="sensor-latitude" placeholder="Coordinate" value="<%= latitude %>">
+    <input type="text" class="form-control" id="sensor-latitude" placeholder="Coordinate" value="<%= data.latitude %>">
   </div>
   <div class="form-group">
     <label for="sensor-longitude">Longitude</label>
-    <input type="text" class="form-control" id="sensor-longitude" placeholder="Coordinate" value="<%= longitude %>">
+    <input type="text" class="form-control" id="sensor-longitude" placeholder="Coordinate" value="<%= data.longitude %>">
   </div>
   <div class="form-group">
     <label for="sensor-type">Type</label>
     <select class="form-control" id="sensor-type">
-      <% _(types).each(function(t) { %>
-        <option value="<%= t %>" <% if (t == type) { %> selected <% } %>><%= t %></option>
+      <% _(data.types || types).each(function(t) { %>
+        <option value="<%= t %>" <% if (t == data.type) { %> selected <% } %>><%= t %></option>
       <% }); %>
     </select>
   </div>
@@ -19,13 +19,13 @@
     <label>Active</label>
     <div class="radio">
       <label>
-        <input type="radio" name="sensor-active" id="sensor-active-true" value="Yes" <% if (active) { %> checked <% } %>>
+        <input type="radio" name="sensor-active" id="sensor-active-true" value="Yes" <% if (data.active) { %> checked <% } %>>
         Yes
       </label>
     </div>
     <div class="radio">
       <label>
-        <input type="radio" name="sensor-active" id="sensor-active-false" value="No" <% if (!active) { %> checked <% } %>>
+        <input type="radio" name="sensor-active" id="sensor-active-false" value="No" <% if (!data.active) { %> checked <% } %>>
         No
       </label>
     </div>

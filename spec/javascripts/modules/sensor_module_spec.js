@@ -54,30 +54,58 @@ describe("SensorApp.Sensor", function() {
 
     describe("running", function() {
       var app = SensorApp,
-          methodSpy;
-
-      beforeEach(function() {
-        methodSpy = sinon.spy(app.Sensor.Controller, 'show');
-
-        // Set up app.mainRegion container
-        setFixtures("<div id='main'/>");
-        app.mainRegion.$el = $('#main');
-
-        app.start({
-          config: { bootstrap: true },
-          models: [BackboneFactory.create("sensor")]
-        });
-        Backbone.history.navigate("", true);
-      });
-
-      afterEach(function() {
-        methodSpy.restore();
-        Backbone.history.navigate("", false);
-      });
+          methodSpy;      
 
       describe("on 'sensor:show' event", function() {
+        beforeEach(function() {
+          methodSpy = sinon.spy(app.Sensor.Controller, 'show');
+
+          // Set up app.mainRegion container
+          setFixtures("<div id='main'/>");
+          app.mainRegion.$el = $('#main');
+
+          app.start({
+            config: { bootstrap: true },
+            models: [BackboneFactory.create("sensor")]
+          });
+          Backbone.history.navigate("", true);
+        });
+
+        afterEach(function() {
+          methodSpy.restore();
+          Backbone.history.navigate("", false);
+        });
+
         it("should trigger the 'show' route", function() {
           $('.list-item-data').trigger('click');
+          expect(methodSpy).toHaveBeenCalled();
+        });
+      });
+
+      describe("on 'sensor:create' event", function() {
+        beforeEach(function() {
+          methodSpy = sinon.spy(app.Sensor.Controller, 'create');
+
+          // Set up app.mainRegion container
+          setFixtures("<div id='main'/>");
+          app.mainRegion.$el = $('#main');
+
+          app.start({
+            config: { bootstrap: true },
+            models: [BackboneFactory.create("sensor")]
+          });
+          Backbone.history.navigate("", true);
+        });
+
+        afterEach(function() {
+          methodSpy.restore();
+          Backbone.history.navigate("", false);
+        });
+
+        // A weird behaviour triggers several times the route
+        // that seem to brake the methodSpy
+        xit("should trigger the 'create' route", function() {
+          $('.sensor-add').trigger('click');
           expect(methodSpy).toHaveBeenCalled();
         });
       });
@@ -89,6 +117,10 @@ describe("SensorApp.Sensor", function() {
 
     it("should have an 'index' route", function() {
       expect(router.appRoutes['']).toBeTruthy();
+    });
+
+    it("should have a 'create' route", function() {
+      expect(router.appRoutes['sensors/create']).toBeTruthy();
     });
 
     it("should have a 'show' route", function() {

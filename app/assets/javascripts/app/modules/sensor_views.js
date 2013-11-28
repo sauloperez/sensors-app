@@ -6,7 +6,7 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     className: "sensor-layout",
 
     regions: {
-      navRegion: "#nav",
+      headerRegion: "#header",
       contentRegion: "#content"
     }
   });
@@ -23,8 +23,8 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     className: "sensor"
   });
 
-  this.EditSensorView = Marionette.ItemView.extend({
-    template: "app/templates/sensors/edit",
+  this.SensorFormView = Marionette.ItemView.extend({
+    template: "app/templates/sensors/form",
     tagName: "div",
     className: "edit-sensor",
 
@@ -36,12 +36,21 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
       latitude: '#sensor-latitude',
       longitude: '#sensor-longitude',
       type: '#sensor-type',
-      // Cache radio buttons container
-      active: '#sensor-active',
+      active: '#sensor-active', // It just caches radio buttons container
     },
 
     initialize: function() {
-      this.listenTo(this.model, 'change', this.render);
+      // Fixes undefined attribute as Ashkenas suggests: 
+      // https://github.com/jashkenas/underscore/issues/237#issuecomment-1781951
+      if (!this.collection) {
+        var attrs = _.clone(this.model.attributes);
+        this.model.set('data', attrs);  
+      }
+      else {
+        this.model = new App.Sensor.SensorModel({
+          data: {}
+        });
+      }
     },
 
     _getActiveValue: function($el) {
@@ -50,11 +59,26 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
 
     saveSensor: function(event) {
       event.preventDefault();
-      this.model.set('latitude', parseFloat(this.ui.latitude.val()));
-      this.model.set('longitude', parseFloat(this.ui.longitude.val()));
-      this.model.set('type', this.ui.type.val());
-      this.model.set('active', this._getActiveValue(this.ui.active));
-      this.model.save();
+
+      // Restore attributes
+      this.model.attributes = this.model.get('data');
+
+      formValues = {
+        latitude: parseFloat(this.ui.latitude.val()),
+        longitude: parseFloat(this.ui.longitude.val()),
+        type: this.ui.type.val(),
+        active: this._getActiveValue(this.ui.active)
+      }
+
+      // Copy the form values into the model and persist it 
+      if (!this.collection) {
+        _.extend(this.model.attributes, formValues);
+        this.model.save();  
+      }
+      // ...or just create a new model within the collection
+      else {
+        this.collection.create(formValues);
+      }
     }
   });
 
@@ -102,6 +126,21 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
   this.NoSensorItemsView = Marionette.ItemView.extend({
     template: "app/templates/sensors/no_items",
     className: "no-items no-sensor-items"
+  });
+
+  this.SensorListHeaderView = Marionette.ItemView.extend({
+    template: "app/templates/sensors/header",
+    tagName: "div",
+    id: "sensor-list-header",
+
+    events: {
+      "click .sensor-add": "createSensor"
+    },
+
+    createSensor: function(event) {
+      var selectedItem = $(event.currentTarget);
+      App.vent.trigger("sensor:create");
+    },
   });
 
   this.SensorListView = Marionette.CollectionView.extend({

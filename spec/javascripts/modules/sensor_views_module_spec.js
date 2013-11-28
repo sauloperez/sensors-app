@@ -9,6 +9,8 @@ describe("SensorApp.SensorViews", function() {
     expect(module).toBeDefined();
   });
 
+
+  // SensorLayout
   describe("SensorApp.SensorViews.SensorLayout", function() {
     var sensorLayout;
 
@@ -16,8 +18,8 @@ describe("SensorApp.SensorViews", function() {
       sensorLayout = new SensorApp.SensorViews.SensorLayout();
     });
 
-    it("should have a nav region", function() {
-      expect(sensorLayout.navRegion).toBeDefined();
+    it("should have a header region", function() {
+      expect(sensorLayout.headerRegion).toBeDefined();
     });
 
     it("should have a content region", function() {
@@ -25,6 +27,8 @@ describe("SensorApp.SensorViews", function() {
     });
   });
 
+
+  // SensorPreview
   describe("SensorApp.SensorViews.SensorPreview", function() {
     var view;
 
@@ -129,6 +133,8 @@ describe("SensorApp.SensorViews", function() {
     });
   });
 
+
+  // SensorListView
   describe("SensorApp.SensorViews.SensorListView", function() {
     var view;
 
@@ -165,6 +171,62 @@ describe("SensorApp.SensorViews", function() {
     });
   });
 
+
+  // SensorListHeaderView
+  describe("SensorApp.SensorViews.SensorListHeaderView", function() {
+    var view;
+
+    beforeEach(function() {
+      view = new SensorApp.SensorViews.SensorListHeaderView();
+      view.render();
+    });
+
+    it("should create a div element", function() {
+      expect(view.el.nodeName).toBe('DIV');
+    });
+
+    it("should have a 'sensor-list-header' id", function() {
+      expect(view.el.getAttribute('id')).toBe("sensor-list-header");
+    });
+
+    it("should create a button to add sensors", function() {
+      expect(view.$el.find(".sensor-add").length).toBe(1);
+    });
+
+    describe("on click in .sensor-add", function() {
+      var app = SensorApp;
+
+      beforeEach(function() {
+        // Set up app.mainRegion container
+        setFixtures("<div id='main'/>");
+        app.mainRegion.$el = $('#main');
+
+        app.start({
+          config: { bootstrap: true },
+          models: [BackboneFactory.create("sensor")]
+        });
+
+        // Init the layout and attach it to the DOM
+        Backbone.history.navigate("elsewhere", false);
+        app.Sensor.Controller._initlayout();
+        Backbone.history.navigate("", true);
+      });
+
+      afterEach(function() {
+        Backbone.history.navigate("", false);
+      });
+
+      it("should trigger a 'sensor:create' event", function() {
+        var spy = sinon.spy();
+        app.vent.on('sensor:create', spy);
+        $('.sensor-add').trigger('click');
+        expect(spy).toHaveBeenCalled();
+      });
+    });
+  });
+
+
+  // SensorView
   describe("SensorApp.SensorViews.SensorView", function() {
     var view;
 
@@ -197,12 +259,14 @@ describe("SensorApp.SensorViews", function() {
     });
   });
 
-  describe("SensorApp.SensorViews.EditSensorView", function() {
+
+  // SensorFormView
+  describe("SensorApp.SensorViews.SensorFormView", function() {
     var view;
 
     beforeEach(function() {
       var sensor = BackboneFactory.create("sensor");
-      view = new SensorApp.SensorViews.EditSensorView({
+      view = new SensorApp.SensorViews.SensorFormView({
         model: sensor
       });
       view.render();
@@ -248,84 +312,139 @@ describe("SensorApp.SensorViews", function() {
       expect(view.$el.find("input[type=radio]#sensor-active-false").length).toBe(1);    
     });
 
-    describe("model update", function() {
-      var changed,
-          editView = new SensorApp.SensorViews.EditSensorView({
-            model: BackboneFactory.create("sensor")
-          }).render();
+    describe("when a model is passed in", function() {
+      
+      describe("on save", function() {
+        var changed, editView;
 
-      beforeEach(function() {
-        changed = false;
-        server = sinon.fakeServer.create();
-        server.respondWith("/sensors/"+editView.model.id, "");
+        beforeEach(function() {
+          editView = new SensorApp.SensorViews.SensorFormView({
+              model: BackboneFactory.create("sensor")
+            }).render();
+          editView.model.url = '/sensors/' + editView.model.id;
 
-        editView.model.url = '/sensors/' + editView.model.id;
-      });
-
-      afterEach(function() {
-        editView.stopListening(editView.model);
-        server.restore();
-      });
-
-      it("should update the latitude", function() {
-        editView.listenTo(editView.model, "sync", function() {
-          if (this.model.get('latitude') && this.model.get('latitude') === 1.100) {
-            changed = true;
-          }
+          changed = false;
+          server = sinon.fakeServer.create();
+          server.respondWith("/sensors/" + editView.model.id, "");
         });
-        editView.ui.latitude.val(1.100);
-        editView.$el.find('form').submit();
-        server.respond();
 
-        expect(changed).toBe(true);
-
-      });
-
-      it("should update the longitude", function() {
-        editView.listenTo(editView.model, "sync", function() {
-          if (this.model.get('longitude') === 1.100) {
-            changed = true;
-          }
+        afterEach(function() {
+          editView.stopListening(editView.model);
+          server.restore();
         });
-        editView.ui.longitude.val(1.100);
-        editView.$el.find('form').submit();
-        server.respond();
 
-        expect(changed).toBe(true);
-      });
-
-      it("should update the type", function() {
-        editView.listenTo(editView.model, "sync", function() {
-          if (this.model.get('type') === 'wind') {
-            changed = true;
-          }
+        it("should save the model", function() {
+          var spy = sinon.spy(Backbone.Model.prototype, 'save');
+          editView.ui.latitude.val(2.100);
+          editView.$el.find('form').submit();
+          expect(spy).toHaveBeenCalled();
         });
-        editView.ui.type.val("wind");
-        editView.$el.find('form').submit();
-        server.respond();
 
-        expect(changed).toBe(true);
-      });
+        it("should update the latitude", function() {
+          editView.listenTo(editView.model, "sync", function() {
+            if (this.model.get('latitude') && this.model.get('latitude') === 1.100) {
+              changed = true;
+            }
+          });
+          editView.ui.latitude.val(1.100);
+          editView.$el.find('form').submit();
+          server.respond();
 
-      it("should update the status", function() {
-        editView.listenTo(editView.model, "sync", function() {
-          if (this.model.get('active') === false) {
-            changed = true;
-          }
+          expect(changed).toBe(true);
+
         });
-        editView.ui.active.find('#sensor-active-false').attr('checked', false).trigger('click');
-        editView.$el.find('form').submit();
-        server.respond();
 
-        expect(changed).toBe(true);
+        it("should update the longitude", function() {
+          editView.listenTo(editView.model, "sync", function() {
+            if (this.model.get('longitude') === 1.100) {
+              changed = true;
+            }
+          });
+          editView.ui.longitude.val(1.100);
+          editView.$el.find('form').submit();
+          server.respond();
+
+          expect(changed).toBe(true);
+        });
+
+        it("should update the type", function() {
+          editView.listenTo(editView.model, "sync", function() {
+            if (this.model.get('type') === 'wind') {
+              changed = true;
+            }
+          });
+          editView.ui.type.val("wind");
+          editView.$el.find('form').submit();
+          server.respond();
+
+          expect(changed).toBe(true);
+        });
+
+        it("should update the status", function() {
+          editView.listenTo(editView.model, "sync", function() {
+            if (this.model.get('active') === false) {
+              changed = true;
+            }
+          });
+          editView.ui.active.find('#sensor-active-false').attr('checked', false).trigger('click');
+          editView.$el.find('form').submit();
+          server.respond();
+
+          expect(changed).toBe(true);
+        });
       });
 
-      it("should")
     });
 
-    
+    describe("when a model is not passed in", function() {
+      var view = new SensorApp.SensorViews.SensorFormView({
+            collection: new SensorApp.Sensor.SensorCollection()
+          }).render();
+
+      it("a collection should be passed in instead", function() {
+        expect(view.collection).toBeTruthy();
+      });
+
+      describe("on save", function() {
+        var spy;
+
+        beforeEach(function() {
+          server = sinon.fakeServer.create();
+          server.respondWith("/api/v1/sensors", "");
+
+          view.ui.latitude.val(1.100);
+          view.ui.longitude.val(1.100);
+          view.ui.type.val("wind");
+          view.ui.active.find('#sensor-active-false').attr('checked', false).trigger('click');
+        });
+
+        afterEach(function() {
+          spy.restore();
+          server.restore();
+        });
+
+        it("should create a model within the collection", function() {
+          spy = sinon.spy(Backbone.Collection.prototype, 'create');
+          view.$el.find('form').submit();
+          expect(spy).toHaveBeenCalled();
+        });
+
+        it("should persist it to the server", function() {
+          var synced = false;
+          view.listenTo(view.collection, "sync", function() {
+            synced = true;
+          });
+          view.$el.find('form').submit();
+          server.respond();
+
+          expect(synced).toBe(true);
+        });
+      });
+    });
   });
 
+
+  // NotFoundSensorView
   describe("SensorApp.SensorViews.NotFoundSensorView", function() {
     var view;
 

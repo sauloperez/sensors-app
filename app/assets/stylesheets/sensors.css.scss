@@ -5,6 +5,7 @@
 @include font-face(entypo, 'entypo/entypo', normal, $asset-pipeline: true);
 
 $list-item-background-hover: #f6faff;
+$border: 1px solid #eee;
 
 // Icons variables
 $icon-font: 'entypo';
@@ -59,7 +60,7 @@ ol, ul {
 
 .list-item {
   padding-right: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: $border;
   &:hover {
     background-color: $list-item-background-hover;
   }
@@ -101,6 +102,16 @@ ol, ul {
   }
 }
 
-form .controls {
+form .controls, #sensor-list-header .controls {
   float: right;
+}
+
+.btn-icon:before {
+  font-family: $icon-font;
+  font-size: 25px;
+  content: "\2795";
+  line-height: 0;
+  margin-right: 8px;
+  position: relative;
+  top: 1px;
 }
