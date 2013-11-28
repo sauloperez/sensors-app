@@ -50,7 +50,29 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
       return $('input[name=sensor-active]:checked').val() === 'Yes';
     },
 
+    _displayError: function(field, errors) {
+      var $parent = this.ui[field].parent();
+      if (field === "active") {
+        $parent = this.ui[field];
+      }
+
+      $parent.addClass('has-error')
+      _.each(errors, function(error) { 
+        $("<span class='error help-block'/>")
+          .text(error)
+          .appendTo($parent); 
+      });
+    },
+
+    _displayErrors: function(errors) {
+      var self = this;
+      _.each(errors, function(error, field) {
+        self._displayError(field, error);
+      });
+    },
+
     saveSensor: function(event) {
+      var self = this;
       event.preventDefault();
 
       formValues = {
@@ -60,14 +82,25 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
         active: this._getActiveValue(this.ui.active)
       }
 
-      // Copy the form values into the model and persist it 
+      // Delete any previous errors
+      this.$el.find('.error').remove();
+      this.$el.find('.has-error').removeClass('has-error');
+
+      // Persist the model
       if (!this.collection) {
-        _.extend(this.model.attributes, formValues);
-        this.model.save();  
+        this.model.save(formValues, { error: function(model, xhr, options) {
+          var errors = JSON.parse(xhr.responseText);
+          self._displayErrors(errors);
+        }});  
       }
       // ...or just create a new model within the collection
       else {
-        this.collection.create(formValues);
+        this.collection.create(formValues, { wait: true, 
+          error: function(model, xhr, options) {
+            var errors = JSON.parse(xhr.responseText);
+            self._displayErrors(errors);
+          }
+        });
       }
     }
   });

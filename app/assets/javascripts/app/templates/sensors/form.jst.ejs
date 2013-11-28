@@ -11,7 +11,7 @@
     <label for="sensor-type">Type</label>
     <select class="form-control" id="sensor-type">
       <% _(data.types || types).each(function(t) { %>
-        <option value="<%= t %>" <% if (t == data.type) { %> selected <% } %>><%= t %></option>
+        <option value="<%- t %>" <% if (t == data.type) { %> selected <% } %>><%- t %></option>
       <% }); %>
     </select>
   </div>
