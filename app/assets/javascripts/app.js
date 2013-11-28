@@ -13,8 +13,15 @@ SensorApp = (function(Backbone, Marionette) {
   // Integrate JST into Marionette
   // Read more: https://github.com/marionettejs/backbone.marionette/wiki/Using-jst-templates-with-marionette
   Backbone.Marionette.Renderer.render = function(template, data) {
-    if (!JST[template]) throw "Template '" + template + "' not found!";
-    return JST[template](data);
+    if (!template) {
+      var error = new Error("Cannot render the template since it's false, null or undefined.");
+      error.name = "TemplateNotFoundError";
+      throw error;
+    }
+
+    // Wrapping 'data' with an object we fix undefined attributes, as Ashkenas suggests: 
+    // https://github.com/jashkenas/underscore/issues/237#issuecomment-1781951
+    return JST[template]({ data: data });
   }
 
   // Globally capture clicks. If they are internal and not in the pass

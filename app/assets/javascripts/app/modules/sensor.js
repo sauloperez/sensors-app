@@ -47,8 +47,8 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     },
 
     index: function() {
-      var headerView = new App.SensorViews.SensorListHeaderView();
-      var contentView = new App.SensorViews.SensorListView({ collection: this.collection });
+      var headerView = new App.SensorViews.SensorListHeaderView(),
+          contentView = new App.SensorViews.SensorListView({ collection: this.collection });
 
       App.vent.on("sensor:show", function(id) {
         console.log("sensor:show called");
@@ -63,7 +63,7 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
       this.layout.contentRegion.show(contentView);
     },
 
-    _showSensorView: function(id) {
+    _getShowSensorView: function(id) {
       var model = this.collection.get(id),
           view;
       if (!model) {
@@ -76,41 +76,53 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     },
 
     show: function(id) {
-      var view = this._showSensorView(id);
-      this.layout.contentRegion.show(view);
+      var contentView = this._getShowSensorView(id);
+          headerView = new App.SensorViews.SensorHeaderView({
+            model: this.collection.get(id)
+          }),
+      this.layout.headerRegion.show(headerView);
+      this.layout.contentRegion.show(contentView);
     },
 
-    _editSensorView: function(id) {
-      var model = this.collection.get(id),
-          view;
-      if (!model) {
-        view = new App.SensorViews.NotFoundSensorView();
+    _getFormSensorView: function(id) {
+      var view,
+          self = this,
+          model = this.collection.get(id);
+          
+      if (!model) { // We'll create it
+        view = new App.SensorViews.SensorFormView({ 
+          collection: self.collection
+        });
       }
-      else {
+      else { // We'll save it if needed
         view = new App.SensorViews.SensorFormView({ model: model });
       }
       return view;
     },
 
     edit: function(id) {
-      var view = this._editSensorView(id);
-      view.model.on("sync", function() {
+      var contentView = this._getFormSensorView(id),
+          headerView = new App.SensorViews.SensorHeaderView({
+            model: this.collection.get(id)
+          });
+
+      contentView.model.on("sync", function() {
         Backbone.history.navigate("/", true);
       });
-      this.layout.contentRegion.show(view);
+      this.layout.headerRegion.show(headerView);
+      this.layout.contentRegion.show(contentView);
     },
 
     create: function() {
       var self = this,
-          view = new App.SensorViews.SensorFormView({ 
-            model: new Sensor.SensorModel(),
-            collection: self.collection
-          });
+          headerView = new App.SensorViews.SensorHeaderView(),
+          contentView = this._getFormSensorView();
 
       this.collection.on("sync", function() {
         Backbone.history.navigate("/", true);
       });
-      this.layout.contentRegion.show(view);
+      this.layout.headerRegion.show(headerView)
+      this.layout.contentRegion.show(contentView);
     }
   };
 

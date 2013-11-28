@@ -6,7 +6,7 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     className: "sensor-layout",
 
     regions: {
-      headerRegion: "#header",
+      headerRegion: "#sensor-header",
       contentRegion: "#content"
     }
   });
@@ -40,16 +40,9 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     },
 
     initialize: function() {
-      // Fixes undefined attribute as Ashkenas suggests: 
-      // https://github.com/jashkenas/underscore/issues/237#issuecomment-1781951
-      if (!this.collection) {
-        var attrs = _.clone(this.model.attributes);
-        this.model.set('data', attrs);  
-      }
-      else {
-        this.model = new App.Sensor.SensorModel({
-          data: {}
-        });
+      if (!this.model) {
+        // The sensor types are listed in the SensorModel defaults
+        this.model = new App.Sensor.SensorModel({});
       }
     },
 
@@ -59,9 +52,6 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
 
     saveSensor: function(event) {
       event.preventDefault();
-
-      // Restore attributes
-      this.model.attributes = this.model.get('data');
 
       formValues = {
         latitude: parseFloat(this.ui.latitude.val()),
@@ -128,10 +118,18 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     className: "no-items no-sensor-items"
   });
 
-  this.SensorListHeaderView = Marionette.ItemView.extend({
+  this.SensorHeaderView = Marionette.ItemView.extend({
     template: "app/templates/sensors/header",
     tagName: "div",
+    id: "sensor-header",
+    className: "header"
+  });
+
+  this.SensorListHeaderView = Marionette.ItemView.extend({
+    template: "app/templates/sensors/list_header",
+    tagName: "div",
     id: "sensor-list-header",
+    className: "header",
 
     events: {
       "click .sensor-add": "createSensor"

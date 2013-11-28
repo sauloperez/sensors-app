@@ -1,19 +1,19 @@
 <div class="sensor-id">
   <strong>Id</strong>
-  <p><%= id %></p>
+  <p><%= data.id %></p>
 </div>
 <div class="sensor-location">
   <strong>Location</strong>
-  <p>(<%= latitude %>, <%= longitude %>)</p>
+  <p>(<%= data.latitude %>, <%= data.longitude %>)</p>
 </div>
 <div class="sensor-type">
   <strong>Type</strong>
-  <p><%= type %></p>
+  <p><%= data.type %></p>
 </div>
 
 <div class="sensor-active">
   <strong>Active</strong>
-  <p><% if (active) { %> Yes <% } else { %> No <% } %></p>
+  <p><% if (data.active) { %> Yes <% } else { %> No <% } %></p>
 </div>
 
 <a href="/sensors" class="btn btn-default">Back</a>
