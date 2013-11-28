@@ -4,7 +4,7 @@ class Sensor < ActiveRecord::Base
   # Disable single table inheritance
   self.inheritance_column = nil
 
-  validates_presence_of :latitude, :longitude, :type, :active
+  validates_presence_of :latitude, :longitude, :type
   validates :latitude, :longitude, numericality: true
   validates :type, inclusion: {in: TYPES}
   validates :active, inclusion: { in: [true, false] }
