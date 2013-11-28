@@ -115,7 +115,7 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
 
   this.NoSensorItemsView = Marionette.ItemView.extend({
     template: "app/templates/sensors/no_items",
-    className: "no-items no-sensor-items"
+    className: "no-data no-items no-sensor-items"
   });
 
   this.SensorHeaderView = Marionette.ItemView.extend({
