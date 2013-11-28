@@ -56,10 +56,17 @@ group :development, :test do
   gem "jasmine-jquery-rails", "~> 1.5.9"
 end
 
+group :production do
+  gem 'rails_12factor'
+  gem 'pg'
+end
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
 end
+
+ruby "1.9.3"
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
