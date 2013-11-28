@@ -43,7 +43,15 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
       if (!this.model) {
         // The sensor types are listed in the SensorModel defaults
         this.model = new App.Sensor.SensorModel({});
+        this.listenTo(this, "invalid", this.onInvalidModel);
       }
+      else {
+        this.listenTo(this.model, "invalid", this.onInvalidModel);
+      }
+    },
+
+    onInvalidModel: function(model) {
+      this._displayErrors(model.validationError);
     },
 
     _getActiveValue: function($el) {
@@ -95,12 +103,13 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
       }
       // ...or just create a new model within the collection
       else {
-        this.collection.create(formValues, { wait: true, 
+        var model = this.collection.create(formValues, { wait: true, 
           error: function(model, xhr, options) {
             var errors = JSON.parse(xhr.responseText);
             self._displayErrors(errors);
           }
         });
+        if (model.validationError) this.trigger("invalid", model);
       }
     }
   });

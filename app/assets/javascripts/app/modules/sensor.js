@@ -5,8 +5,51 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
   this.SensorModel = Backbone.Model.extend({ 
     defaults: {
       types: ["solar", "wind"]
+    },
+
+    validate: function(attrs, options) {
+      var errors = {},
+          whiteList = ['latitude', 'longitude', 'type', 'active'];
+
+      attrs = _.pick(attrs, whiteList);
+
+      // Initialize hash of arrays
+      _.each(attrs, function(value, attr) {
+        errors[attr] = [];
+      });
+
+      // Deal with blank fields
+      _.each(attrs, function(value, field) {
+        if (!value && field !== "active") {
+          errors[field].push("can't be blank");
+        }
+      });
+
+      // Deal with business logic
+      if (isNaN(attrs.latitude)) {
+        errors['latitude'].push("is not a number");
+      }
+      if (isNaN(attrs.longitude)) {
+        errors['longitude'].push("is not a number");
+      }
+      if (!_.contains(this.defaults.types, attrs.type)) {
+        errors['type'].push("is not included in the list");
+      }
+      if (typeof attrs.active !== "boolean") {
+        errors['active'].push("is not Yes or No");
+      }
+
+      // Return errros if any
+      var ret = {};
+      _.each(errors, function(array, field) {
+        if (!!array.length) {
+          ret[field] = array;
+        }
+      });
+      if (!_.isEmpty(ret)) return ret;
     }
   });
+
   this.SensorCollection = Backbone.Collection.extend({
     model: Sensor.SensorModel,
     url: "/api/v1/sensors"
