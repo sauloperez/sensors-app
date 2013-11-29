@@ -77,7 +77,7 @@ describe("SensorApp.Sensor", function() {
         });
 
         it("should trigger the 'show' route", function() {
-          $('.list-item-data').trigger('click');
+          $('.list-item-field').trigger('click');
           expect(methodSpy).toHaveBeenCalled();
         });
       });

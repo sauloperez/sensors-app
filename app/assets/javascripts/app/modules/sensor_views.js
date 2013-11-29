@@ -120,7 +120,7 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
 
   this.SensorPreview = Marionette.ItemView.extend({
     template: "app/templates/sensors/preview",
-    tagName: "li",
+    tagName: "tr",
     className: "list-item sensor-list-item",
 
     ui: {
@@ -129,14 +129,22 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     },
 
     events: {
-      "click .list-item-data": "showSensor",
+      "click .list-item-field": "showSensor",
       "click .confirm-deletion": "confirmDeletion",
       "click .delete": "deleteSensor"
     },
 
+    initialize: function() {
+      this.$el.data("model-id", this.model.id);
+    },
+
+    getModelIdFromItem: function($item) {
+      return $item.data("model-id") || $item.parent().data("model-id");
+    },
+
     showSensor: function(event) {
       var selectedItem = $(event.currentTarget);
-      App.vent.trigger("sensor:show", selectedItem.parent().data("id"));
+      App.vent.trigger("sensor:show", this.getModelIdFromItem(selectedItem));
     },
 
     deleteSensor: function(event) {
@@ -187,11 +195,16 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     },
   });
 
-  this.SensorListView = Marionette.CollectionView.extend({
-    tagName: "ul",
+  this.SensorListView = Marionette.CompositeView.extend({
+    template: "app/templates/sensors/list",
+    tagName: "table",
     id: "sensor-list",
-    className: "sensor-list",
+    className: "table sensor-list",
     itemView: this.SensorPreview,
-    emptyView: this.NoSensorItemsView
+    emptyView: this.NoSensorItemsView,
+
+    appendHtml: function(collectionView, itemView) {
+      collectionView.$("tbody").append(itemView.el);
+    }
   });
 });

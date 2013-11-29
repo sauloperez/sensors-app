@@ -70,39 +70,56 @@ ol, ul {
   }
 }
 
-.list-item-inner {
-  position: relative;
-  .list-item-data {
-    padding: 10px 0;
-    margin-right: $list-item-controls-width;
+.table > tbody > tr.list-item > td {
+  vertical-align: middle;
+}
+
+// .list-item-inner {
+//   position: relative;
+//   .list-item-data {
+//     padding: 10px 0;
+//     margin-right: $list-item-controls-width;
+//   }
+//   .icon {
+//     display: none;
+//     position: absolute;
+//     top: 0;
+//     right: 0;
+//   }
+//   &:hover {
+//     cursor: pointer;
+//     .icon {
+//       display: inline;
+//     }
+//   }
+//   .controls {
+//     float: right;
+//     width: $list-item-controls-width;
+//   }
+// }
+
+.list-item {
+  td {
+    position: relative;
+  }
+  .controls {
+    text-align: right;
+    .delete {
+      position: absolute;
+      z-index: 1;
+    }
   }
   .icon {
-    display: none;
-    position: absolute;
-    top: 0;
-    right: 0;
+    display: inline-block;
+    height: 24px;
+    line-height: 0.75;
+    visibility: hidden;
   }
   &:hover {
     cursor: pointer;
     .icon {
-      display: inline;
+      visibility: visible;
     }
-  }
-  .controls {
-    float: right;
-    width: $list-item-controls-width;
-  }
-}
-
-.controls {
-  .icon.edit {
-    right: 25px;
-  }
-  .delete {
-    position: absolute;
-    top: 9px;
-    right: 0;
-    z-index: 1;
   }
 }
 

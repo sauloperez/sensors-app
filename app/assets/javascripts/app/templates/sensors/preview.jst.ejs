@@ -1,17 +1,20 @@
-<div class="list-item-inner" data-id="<%- data.id %>">
-  <div class="list-item-data">
-    <span class="sensor-id"><%- data.id %></span>
-    <span class="sensor-location">(<%- data.latitude %>, <%- data.longitude %>)</span>
-    <span class="sensor-type"><%- data.type %></span>
+<!-- <div class="list-item-inner" data-id="<%- data.id %>">
+  <div class="list-item-data"> -->
+    <td class="list-item-field sensor-id"><%- data.id %></td>
+    <td class="list-item-field sensor-latitude"><%- data.latitude %></td>
+    <td class="list-item-field sensor-longitude"><%- data.longitude %></td>
+    <td class="list-item-field sensor-type"><%- data.type %></td>
+    <td class="list-item-field sensor-active">
     <% if (data.active) { %>
-      <span class="sensor-active label label-success">active</span>
+      <span class="label label-success">active</span>
     <% } else { %>
-      <span class="sensor-active label label-danger">not active</span>
+      <span class="label label-danger">not active</span>
     <% } %>
-  </div>
-  <div class="controls">
+    </td>
+  <!-- </div> -->
+  <td class="controls">
     <button type="button" class="delete btn btn-danger btn-xs hidden">Delete</button>
     <a href="/sensors/<%- data.id %>/edit" class="edit icon main-action" title="Edit sensor">&#9881;</a>
     <span class="confirm-deletion icon main-action" title="Delete sensor">&#59177;</span>
-  </div>
-</div>
+  </td>
+<!-- </div> -->

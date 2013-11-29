@@ -40,16 +40,20 @@ describe("SensorApp.SensorViews", function() {
       view.render();
     });
 
-    it("should create a li element", function() {
-      expect(view.el.nodeName).toEqual('LI');
+    it("should create a tr element", function() {
+      expect(view.el.nodeName).toEqual('TR');
     });
 
     it("should show the sensor id", function() {
       expect(view.el.getElementsByClassName("sensor-id").length).toBe(1);
     });
 
-    it("should show the sensor location", function() {
-      expect(view.el.getElementsByClassName("sensor-location").length).toBe(1);
+    it("should show the sensor latitude", function() {
+      expect(view.el.getElementsByClassName("sensor-latitude").length).toBe(1);
+    });
+
+    it("should show the sensor longitude", function() {
+      expect(view.el.getElementsByClassName("sensor-longitude").length).toBe(1);
     });
 
     it("should show the sensor type", function() {
@@ -61,7 +65,7 @@ describe("SensorApp.SensorViews", function() {
     });
 
     it("should store the id in a data-id attribute", function() {
-      var dataId = view.$el.find('.list-item-inner').data('id');
+      var dataId = view.getModelIdFromItem(view.$el);
       expect(dataId).toBeTruthy();
     });
 
@@ -91,7 +95,7 @@ describe("SensorApp.SensorViews", function() {
       it("should trigger a 'sensor:show' event", function() {
         var spy = sinon.spy();
         app.vent.on('sensor:show', spy);
-        $('.list-item-data').trigger('click');
+        $('.list-item-field').trigger('click');
         expect(spy).toHaveBeenCalled();
       });
     });
@@ -143,8 +147,8 @@ describe("SensorApp.SensorViews", function() {
       view.render();
     });
 
-    it("should create a ul element", function() {
-      expect(view.el.nodeName).toBe('UL');
+    it("should create a table element", function() {
+      expect(view.el.nodeName).toBe('TABLE');
     });
 
     it("should have a 'sensor-list' id", function() {
@@ -152,7 +156,7 @@ describe("SensorApp.SensorViews", function() {
     });
 
     it("should have a 'sensor-list' class", function() {
-      expect(view.el.getAttribute('class')).toBe("sensor-list");
+      expect(view.$el.hasClass('sensor-list')).toBe(true);
     });
 
     it("should be populated whether a collection is provided", function() {
