@@ -41,7 +41,7 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
 
     initialize: function() {
       if (!this.model) {
-        // The sensor types are listed in the SensorModel defaults
+        // We must instantiate it because the sensor types are listed in the SensorModel defaults
         this.model = new App.Sensor.SensorModel({});
         this.listenTo(this, "invalid", this.onInvalidModel);
       }
@@ -79,36 +79,40 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
       });
     },
 
-    saveSensor: function(event) {
-      var self = this;
-      event.preventDefault();
+    _removeErrors: function() {
+      this.$el.find('.error').remove();
+      this.$el.find('.has-error').removeClass('has-error');
+    },
 
-      formValues = {
+    _getFormValues: function() {
+      return {
         latitude: parseFloat(this.ui.latitude.val()),
         longitude: parseFloat(this.ui.longitude.val()),
         type: this.ui.type.val(),
         active: this._getActiveValue(this.ui.active)
-      }
+      };
+    },
 
-      // Delete any previous errors
-      this.$el.find('.error').remove();
-      this.$el.find('.has-error').removeClass('has-error');
+    saveSensor: function(event) {
+      var self = this;
+      event.preventDefault();
+
+      formValues = this._getFormValues();
+      this._removeErrors();
+
+      // Error handling
+      onError = function(model, xhr, options) {
+        var errors = JSON.parse(xhr.responseText);
+        self._displayErrors(errors);
+      };
 
       // Persist the model
       if (!this.collection) {
-        this.model.save(formValues, { error: function(model, xhr, options) {
-          var errors = JSON.parse(xhr.responseText);
-          self._displayErrors(errors);
-        }});  
+        this.model.save(formValues, { error: onError });  
       }
       // ...or just create a new model within the collection
       else {
-        var model = this.collection.create(formValues, { wait: true, 
-          error: function(model, xhr, options) {
-            var errors = JSON.parse(xhr.responseText);
-            self._displayErrors(errors);
-          }
-        });
+        var model = this.collection.create(formValues, { wait: true, error: onError });
         if (model.validationError) this.trigger("invalid", model);
       }
     }
