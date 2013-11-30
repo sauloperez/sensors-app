@@ -52,7 +52,11 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
 
   this.SensorCollection = Backbone.Collection.extend({
     model: Sensor.SensorModel,
-    url: "/api/v1/sensors"
+    url: "/api/v1/sensors",
+
+    filterBy: function(filters) {
+      return this.where(filters);
+    }
   });
 
 
@@ -81,29 +85,52 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
         this.collection = new Sensor.SensorCollection();
         this.collection.fetch();
       }
-      this._initlayout();
+
+      // We keep a copy collection to host the results of the filters
+      this.currentFilter = "all";
+      this.filteredCollection = new Sensor.SensorCollection(this.collection.models);
+      
+      this._initLayout();
+
+      // Set event handlers
+      App.vent.on("sensor:show", function(id) {
+        Backbone.history.navigate("/sensors/" + id, true);
+      });
+      App.vent.on("sensor:create", function() {
+        Backbone.history.navigate("/sensors/create", true);
+      });
     },
 
-    _initlayout: function() {
+    _initLayout: function() {
       this.layout = new App.SensorViews.SensorLayout();
       App.mainRegion.show(this.layout);
     },
 
     index: function() {
-      var headerView = new App.SensorViews.SensorListHeaderView(),
-          contentView = new App.SensorViews.SensorListView({ collection: this.collection });
+      var self = this,
+          headerView = new App.SensorViews.SensorListHeaderView(),
+          contentView = new App.SensorViews.SensorListView({ 
+            collection: this.filteredCollection 
+          });
 
-      App.vent.on("sensor:show", function(id) {
-        console.log("sensor:show called");
-        Backbone.history.navigate("/sensors/"+id, true);
-      });
-      App.vent.on("sensor:create", function() {
-        console.log("sensor:create called");
-        Backbone.history.navigate("/sensors/create", true);
-      });
-
-      this.layout.headerRegion.show(headerView)
+      this.layout.headerRegion.show(headerView);
       this.layout.contentRegion.show(contentView);
+
+      // Start up the filters module
+      App.SensorFilters.start({ 
+        collection: this.filteredCollection,
+        region: self.layout.navRegion,
+        currentFilter: this.currentFilter 
+      });
+      App.vent.on("sensor:filter:active", function() {
+        self.filterBy('active', true);
+      });
+      App.vent.on("sensor:filter:inactive", function() {
+        self.filterBy('active', false);
+      });
+      App.vent.on("sensor:filter:all", function() {
+        self.filterBy();
+      });
     },
 
     _getShowSensorView: function(id) {
@@ -118,6 +145,11 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
       return view;
     },
 
+    _hideFilters: function() {
+      App.SensorFilters.stop();
+      this.layout.navRegion.close();
+    },
+
     show: function(id) {
       var contentView = this._getShowSensorView(id);
           headerView = new App.SensorViews.SensorHeaderView({
@@ -125,6 +157,7 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
           }),
       this.layout.headerRegion.show(headerView);
       this.layout.contentRegion.show(contentView);
+      this._hideFilters();
     },
 
     _getFormSensorView: function(id) {
@@ -154,6 +187,7 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
       });
       this.layout.headerRegion.show(headerView);
       this.layout.contentRegion.show(contentView);
+      this._hideFilters();
     },
 
     create: function() {
@@ -164,8 +198,29 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
       this.collection.on("sync", function() {
         Backbone.history.navigate("/", true);
       });
-      this.layout.headerRegion.show(headerView)
+      this.layout.headerRegion.show(headerView);
       this.layout.contentRegion.show(contentView);
+      this._hideFilters();
+    },
+
+    filterBy: function(attr, value) {
+      var self = this,
+          filter = {},
+          filteredModels;
+      
+      this.currentFilter = attr || "all";
+
+      if (attr) {
+        filter[attr] = value;
+        filteredModels = this.collection.filterBy(filter);
+        if (attr === "active" && !value) {
+          this.currentFilter = "inactive";
+        }
+      }
+      else { // Just don't filter; show all them
+        filteredModels = this.collection.models
+      }
+      this.filteredCollection.reset(filteredModels);
     }
   };
 

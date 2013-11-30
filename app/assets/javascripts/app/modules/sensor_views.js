@@ -7,6 +7,7 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
 
     regions: {
       headerRegion: "#sensor-header",
+      navRegion: "#sensor-nav",
       contentRegion: "#content"
     }
   });

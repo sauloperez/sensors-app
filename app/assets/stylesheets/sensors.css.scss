@@ -74,30 +74,6 @@ ol, ul {
   vertical-align: middle;
 }
 
-// .list-item-inner {
-//   position: relative;
-//   .list-item-data {
-//     padding: 10px 0;
-//     margin-right: $list-item-controls-width;
-//   }
-//   .icon {
-//     display: none;
-//     position: absolute;
-//     top: 0;
-//     right: 0;
-//   }
-//   &:hover {
-//     cursor: pointer;
-//     .icon {
-//       display: inline;
-//     }
-//   }
-//   .controls {
-//     float: right;
-//     width: $list-item-controls-width;
-//   }
-// }
-
 .list-item {
   td {
     position: relative;
@@ -129,7 +105,9 @@ form .controls {
 
 .header {
   position: relative;
-  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: $border;
+  margin-bottom: 25px;
   .header-title {
     display: inline;
   }
@@ -148,4 +126,12 @@ form .controls {
   margin-right: 8px;
   position: relative;
   top: 1px;
+}
+
+.sensor-filters {
+  float: right;
+}
+
+.current {
+  @extend .btn-primary;
 }
