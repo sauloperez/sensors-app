@@ -161,19 +161,12 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     },
 
     _getFormSensorView: function(id) {
-      var view,
-          self = this,
+      var options = {},
           model = this.collection.get(id);
           
-      if (!model) { // We'll create it
-        view = new App.SensorViews.SensorFormView({ 
-          collection: self.collection
-        });
-      }
-      else { // We'll save it if needed
-        view = new App.SensorViews.SensorFormView({ model: model });
-      }
-      return view;
+      // If the model does not exist we'll create it within the collection
+      options = (!model) ? {collection: this.collection} : {model: model};
+      return new App.SensorViews.SensorFormView(options);
     },
 
     edit: function(id) {
