@@ -60,9 +60,7 @@ describe("SensorApp.Sensor", function() {
         beforeEach(function() {
           methodSpy = sinon.spy(app.Sensor.Controller, 'show');
 
-          // Set up app.mainRegion container
-          setFixtures("<div id='main'/>");
-          app.mainRegion.$el = $('#main');
+          SpecHelpers.loadRegions(app);
 
           app.start({
             config: { bootstrap: true },
@@ -86,9 +84,7 @@ describe("SensorApp.Sensor", function() {
         beforeEach(function() {
           methodSpy = sinon.spy(app.Sensor.Controller, 'create');
 
-          // Set up app.mainRegion container
-          setFixtures("<div id='main'/>");
-          app.mainRegion.$el = $('#main');
+          SpecHelpers.loadRegions(app);
 
           app.start({
             config: { bootstrap: true },

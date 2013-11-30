@@ -73,9 +73,7 @@ describe("SensorApp.SensorViews", function() {
       var app = SensorApp;
 
       beforeEach(function() {
-        // Set up app.mainRegion container
-        setFixtures("<div id='main'/>");
-        app.mainRegion.$el = $('#main');
+        SpecHelpers.loadRegions(app);
 
         app.start({
           config: { bootstrap: true },
@@ -84,7 +82,7 @@ describe("SensorApp.SensorViews", function() {
 
         // Init the layout and attach it to the DOM
         Backbone.history.navigate("elsewhere", false);
-        app.Sensor.Controller._initlayout();
+        app.Sensor.Controller._initLayout();
         Backbone.history.navigate("", true);
       });
 
@@ -106,9 +104,7 @@ describe("SensorApp.SensorViews", function() {
           stub = sinon.stub(Backbone.Model.prototype, 'destroy');
 
       beforeEach(function() {
-        // Set up app.mainRegion container
-        setFixtures("<div id='main'/>");
-        app.mainRegion.$el = $('#main');
+        SpecHelpers.loadRegions(app);
 
         app.start({
           config: { bootstrap: true },
@@ -117,7 +113,7 @@ describe("SensorApp.SensorViews", function() {
 
         // Init the layout and attach it to the DOM
         Backbone.history.navigate("elsewhere", false);
-        app.Sensor.Controller._initlayout();
+        app.Sensor.Controller._initLayout();
         Backbone.history.navigate("", true);
 
         $('.sensor-list-item .delete').trigger('click');
@@ -201,9 +197,7 @@ describe("SensorApp.SensorViews", function() {
       var app = SensorApp;
 
       beforeEach(function() {
-        // Set up app.mainRegion container
-        setFixtures("<div id='main'/>");
-        app.mainRegion.$el = $('#main');
+        SpecHelpers.loadRegions(app);
 
         app.start({
           config: { bootstrap: true },
@@ -212,7 +206,7 @@ describe("SensorApp.SensorViews", function() {
 
         // Init the layout and attach it to the DOM
         Backbone.history.navigate("elsewhere", false);
-        app.Sensor.Controller._initlayout();
+        app.Sensor.Controller._initLayout();
         Backbone.history.navigate("", true);
       });
 
