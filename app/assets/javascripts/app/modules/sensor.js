@@ -88,8 +88,8 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
 
       // We keep a copy collection to host the results of the filters
       this.currentFilter = "all";
-      this.filteredCollection = new Sensor.SensorCollection(this.collection.models);
-      
+      this._setFilteredCollection(this.collection.models);
+
       this._initLayout();
 
       // Set event handlers
@@ -98,6 +98,19 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
       });
       App.vent.on("sensor:create", function() {
         Backbone.history.navigate("/sensors/create", true);
+      });
+    },
+
+    _setFilteredCollection: function(models) {
+      var self = this;
+      this.filteredCollection = new Sensor.SensorCollection(models);
+
+      // Keep both collections synchronized
+      this.filteredCollection.on("add", function(sensor) {
+        self.collection.add(sensor);
+      });
+      this.filteredCollection.on("remove", function(sensor) {
+        self.collection.remove(sensor);
       });
     },
 
@@ -134,8 +147,9 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     },
 
     _getShowSensorView: function(id) {
-      var model = this.collection.get(id),
-          view;
+      var view, 
+          model = this.filteredCollection.get(id);
+
       if (!model) {
         view = new App.SensorViews.NotFoundSensorView();
       }
@@ -153,7 +167,7 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     show: function(id) {
       var contentView = this._getShowSensorView(id);
           headerView = new App.SensorViews.SensorHeaderView({
-            model: this.collection.get(id)
+            model: this.filteredCollection.get(id)
           }),
       this.layout.headerRegion.show(headerView);
       this.layout.contentRegion.show(contentView);
@@ -162,17 +176,17 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
 
     _getFormSensorView: function(id) {
       var options = {},
-          model = this.collection.get(id);
+          model = this.filteredCollection.get(id);
           
       // If the model does not exist we'll create it within the collection
-      options = (!model) ? {collection: this.collection} : {model: model};
+      options = (!model) ? {collection: this.filteredCollection} : {model: model};
       return new App.SensorViews.SensorFormView(options);
     },
 
     edit: function(id) {
       var contentView = this._getFormSensorView(id),
           headerView = new App.SensorViews.SensorHeaderView({
-            model: this.collection.get(id)
+            model: this.filteredCollection.get(id)
           });
 
       contentView.model.on("sync", function() {
@@ -188,6 +202,7 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
           headerView = new App.SensorViews.SensorHeaderView(),
           contentView = this._getFormSensorView();
 
+      // Move to index on server acknowledgment
       this.collection.on("sync", function() {
         Backbone.history.navigate("/", true);
       });
