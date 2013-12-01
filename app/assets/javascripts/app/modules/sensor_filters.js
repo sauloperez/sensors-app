@@ -7,11 +7,6 @@ SensorApp.module("SensorFilters", function(SensorFilters, App, Backbone, Marione
     className: "sensor-filters",
 
     events: {
-      // "click #filter-active": "filterByActive",
-      // "click #filter-inactive": "filterByInactive",
-      // "click #filter-solar": "filterBySolar",
-      // "click #filter-wind": "filterByWind",
-      // "click #filter-all": "filterByAll"
       "click .filter-button": "filterBy" 
     },
 
