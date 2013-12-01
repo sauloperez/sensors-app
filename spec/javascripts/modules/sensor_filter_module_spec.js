@@ -34,7 +34,7 @@ describe("SensorFilters", function() {
           assert = (attr === "active" && value === true);
         });
       });
-      module.Controller.region.currentView.filterByActive();
+      module.Controller.region.currentView.filterBy({active: true});
       expect(assert).toBe(true);
     });
 
@@ -45,7 +45,7 @@ describe("SensorFilters", function() {
           assert = (attr === "active" && value === false);
         });
       });
-      module.Controller.region.currentView.filterByInactive();
+      module.Controller.region.currentView.filterBy({active: false});
       expect(assert).toBe(true);
     });
   });
@@ -58,7 +58,7 @@ describe("SensorFilters", function() {
           assert = (attr === "type" && value === "solar");
         });
       });
-      module.Controller.region.currentView.filterBySolar();
+      module.Controller.region.currentView.filterBy({type: "solar"});
       expect(assert).toBe(true);
     });
 
@@ -69,7 +69,7 @@ describe("SensorFilters", function() {
           assert = (attr === "type" && value === "wind");
         });
       });
-      module.Controller.region.currentView.filterByWind();
+      module.Controller.region.currentView.filterBy({type: "wind"});
       expect(assert).toBe(true);
     });
   });
@@ -77,7 +77,7 @@ describe("SensorFilters", function() {
   it("should trigger the 'sensor:filter:all' event", function() {
     var spy = sinon.spy();
     app.vent.on("sensor:filter:all", spy);
-    module.Controller.region.currentView.filterByAll();
+    module.Controller.region.currentView.filterBy();
     expect(spy).toHaveBeenCalled();
   });
 });

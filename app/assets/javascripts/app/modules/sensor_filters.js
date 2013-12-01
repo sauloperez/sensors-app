@@ -7,11 +7,12 @@ SensorApp.module("SensorFilters", function(SensorFilters, App, Backbone, Marione
     className: "sensor-filters",
 
     events: {
-      "click #filter-active": "filterByActive",
-      "click #filter-inactive": "filterByInactive",
-      "click #filter-solar": "filterBySolar",
-      "click #filter-wind": "filterByWind",
-      "click #filter-all": "filterByAll"
+      // "click #filter-active": "filterByActive",
+      // "click #filter-inactive": "filterByInactive",
+      // "click #filter-solar": "filterBySolar",
+      // "click #filter-wind": "filterByWind",
+      // "click #filter-all": "filterByAll"
+      "click .filter-button": "filterBy" 
     },
 
     ui: {
@@ -45,29 +46,33 @@ SensorApp.module("SensorFilters", function(SensorFilters, App, Backbone, Marione
       this.ui[key].addClass("current");
     },
 
-    filterByActive: function() {
-      this.selectedFilter = { active: true };
-      App.vent.trigger("sensor:filter:active", this.selectedFilter);
-    },
-
-    filterByInactive: function() {
-      this.selectedFilter = { active: false };
-      App.vent.trigger("sensor:filter:active", this.selectedFilter);
-    },
-
-    filterBySolar: function() {
-      this.selectedFilter = { type: "solar" };
-      App.vent.trigger("sensor:filter:type", this.selectedFilter);
-    },
-
-    filterByWind: function() {
-      this.selectedFilter = { type: "wind" };
-      App.vent.trigger("sensor:filter:type", this.selectedFilter);
-    },
-
-    filterByAll: function() {
+    // It accepts either an event object or an attr-value hash
+    filterBy: function(options) {
+      var $button, attr, value;
       this.selectedFilter = {};
-      App.vent.trigger("sensor:filter:all");
+      
+      if (options) {
+        // An event is passed in
+        if (options.currentTarget) {
+          $button = $(options.currentTarget);
+          attr = $button.data("filter-attr");
+          value = $button.data("filter-value");
+        }
+        // A hash is passed in
+        else {
+          attr = _.keys(options)[0];
+          value = options[attr];
+        }
+      }
+
+      // Case 'all'. Don't apply any filter
+      if (attr === "all" || !options) {
+        App.vent.trigger("sensor:filter:all");
+        return;
+      }
+
+      this.selectedFilter[attr] = value;
+      App.vent.trigger("sensor:filter:" + attr, this.selectedFilter);
     }
   });
 
