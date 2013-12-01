@@ -136,17 +136,16 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
       this._hideFilters();
     },
 
-    filterBy: function(attr, value) {
-      var filter = {},
-          filteredModels = this.collection.models;
+    filterBy: function(filter) {
+      var filteredModels = this.collection.models;
 
-      this.currentFilter = {"attr": attr, "value": value};
-      if (!attr && !value) {
-        this.currentFilter = {"attr": "all"};
+      if (_.isEmpty(filter)) {
+        this.currentFilter = {};
+        this.filteredCollection.reset(filteredModels);
+        return;
       }
-
-      if (attr) {
-        filter[attr] = value;
+      else {
+        this.currentFilter = filter;
         filteredModels = this.collection.filterBy(filter);
       }
       this.filteredCollection.reset(filteredModels);
@@ -154,12 +153,19 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
 
     _setFilteredCollection: function(models) {
       var self = this;
-      this.currentFilter = {"attr": "all"};
+      this.currentFilter = {};
       this.filteredCollection = new Sensor.SensorCollection(models);
 
       // Keep both collections synchronized
+      // filteredCollection acts as a proxy of the unfiltered collection (this.collection)
       this.filteredCollection.on("add", function(sensor) {
         self.collection.add(sensor);
+        // May be the case that the recenlty added model should not be shown for the current filter
+        self.filterBy(self.currentFilter);
+      });
+      this.filteredCollection.on("change", function(sensor) {
+        // May be the case that the recenlty changed model should not be shown for the current filter
+        self.filterBy(self.currentFilter);
       });
       this.filteredCollection.on("remove", function(sensor) {
         self.collection.remove(sensor);
@@ -197,11 +203,11 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
         currentFilter: this.currentFilter 
       });
 
-      App.vent.on("sensor:filter:active", function(value) {
-        self.filterBy('active', value);
+      App.vent.on("sensor:filter:active", function(filter) {
+        self.filterBy(filter);
       });
-      App.vent.on("sensor:filter:type", function(value) {
-        self.filterBy('type', value);
+      App.vent.on("sensor:filter:type", function(filter) {
+        self.filterBy(filter);
       });
       App.vent.on("sensor:filter:all", function() {
         self.filterBy();

@@ -27,19 +27,23 @@ describe("SensorFilters", function() {
   });
 
   describe("active field filter", function() {
-    it("should trigger the 'sensor:filter:active' event with the value 'true' passed in", function() {
+    it("should trigger the 'sensor:filter:active' event passing the value 'true'", function() {
       var assert = false;
-      app.vent.on("sensor:filter:active", function(value) {
-        assert = (value === true);
+      app.vent.on("sensor:filter:active", function(filter) {
+        _.each(filter, function(value, attr) {
+          assert = (attr === "active" && value === true);
+        });
       });
       module.Controller.region.currentView.filterByActive();
       expect(assert).toBe(true);
     });
 
-    it("should trigger the 'sensor:filter:active' event with the value 'false' passed in", function() {
+    it("should trigger the 'sensor:filter:active' event passing the value 'false'", function() {
       var assert = false;
-      app.vent.on("sensor:filter:active", function(value) {
-        assert = (value === false);
+      app.vent.on("sensor:filter:active", function(filter) {
+        _.each(filter, function(value, attr) {
+          assert = (attr === "active" && value === false);
+        });
       });
       module.Controller.region.currentView.filterByInactive();
       expect(assert).toBe(true);
@@ -49,8 +53,10 @@ describe("SensorFilters", function() {
   describe("type field filter", function() {
     it("should trigger the 'sensor:filter:type' event pasing the value 'solar'", function() {
       var assert = false;
-      app.vent.on("sensor:filter:type", function(value) {
-        assert = (value === "solar");
+      app.vent.on("sensor:filter:type", function(filter) {
+        _.each(filter, function(value, attr) {
+          assert = (attr === "type" && value === "solar");
+        });
       });
       module.Controller.region.currentView.filterBySolar();
       expect(assert).toBe(true);
@@ -58,8 +64,10 @@ describe("SensorFilters", function() {
 
     it("should trigger the 'sensor:filter:type' event pasing the value 'wind'", function() {
       var assert = false;
-      app.vent.on("sensor:filter:type", function(value) {
-        assert = (value === "wind");
+      app.vent.on("sensor:filter:type", function(filter) {
+        _.each(filter, function(value, attr) {
+          assert = (attr === "type" && value === "wind");
+        });
       });
       module.Controller.region.currentView.filterByWind();
       expect(assert).toBe(true);
