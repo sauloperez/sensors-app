@@ -138,26 +138,23 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
 
     filterBy: function(attr, value) {
       var filter = {},
-          filteredModels;
-      
-      this.currentFilter = attr || "all";
+          filteredModels = this.collection.models;
+
+      this.currentFilter = {"attr": attr, "value": value};
+      if (!attr && !value) {
+        this.currentFilter = {"attr": "all"};
+      }
 
       if (attr) {
         filter[attr] = value;
         filteredModels = this.collection.filterBy(filter);
-        if (attr === "active" && !value) {
-          this.currentFilter = "inactive";
-        }
-      }
-      else { // Just don't filter; show all them
-        filteredModels = this.collection.models
       }
       this.filteredCollection.reset(filteredModels);
     },
 
     _setFilteredCollection: function(models) {
       var self = this;
-      this.currentFilter = "all";
+      this.currentFilter = {"attr": "all"};
       this.filteredCollection = new Sensor.SensorCollection(models);
 
       // Keep both collections synchronized
@@ -193,18 +190,18 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
 
     _showFilters: function() {
       var self = this;
-      
+
       App.SensorFilters.start({ 
         collection: this.filteredCollection,
         region: this.layout.navRegion,
         currentFilter: this.currentFilter 
       });
 
-      App.vent.on("sensor:filter:active", function() {
-        self.filterBy('active', true);
+      App.vent.on("sensor:filter:active", function(value) {
+        self.filterBy('active', value);
       });
-      App.vent.on("sensor:filter:inactive", function() {
-        self.filterBy('active', false);
+      App.vent.on("sensor:filter:type", function(value) {
+        self.filterBy('type', value);
       });
       App.vent.on("sensor:filter:all", function() {
         self.filterBy();

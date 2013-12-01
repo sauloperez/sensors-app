@@ -163,12 +163,6 @@ describe("SensorApp.SensorViews", function() {
       colView.render();
       expect(colView.el.getElementsByClassName('list-item').length).toBeTruthy();
     });
-
-    it("should show an empty list otherwise", function() {
-      var colView = new SensorApp.SensorViews.SensorListView();
-      colView.render();
-      expect(colView.el.getElementsByClassName('no-sensor-items').length).toBe(1);
-    });
   });
 
 

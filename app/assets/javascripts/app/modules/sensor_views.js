@@ -202,7 +202,7 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     id: "sensor-list",
     className: "table sensor-list",
     itemView: this.SensorPreview,
-    emptyView: this.NoSensorItemsView,
+    // emptyView: this.NoSensorItemsView,
 
     appendHtml: function(collectionView, itemView) {
       collectionView.$("tbody").append(itemView.el);

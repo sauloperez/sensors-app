@@ -9,19 +9,21 @@ SensorApp.module("SensorFilters", function(SensorFilters, App, Backbone, Marione
     events: {
       "click #filter-active": "filterByActive",
       "click #filter-inactive": "filterByInactive",
+      "click #filter-solar": "filterBySolar",
+      "click #filter-wind": "filterByWind",
       "click #filter-all": "filterByAll"
     },
 
     ui: {
-      active: "#filter-active",
-      inactive: "#filter-inactive",
-      all: "#filter-all",
+      active_true: "#filter-active",
+      active_false: "#filter-inactive",
+      type_solar: "#filter-solar",
+      type_wind: "#filter-wind",
+      all: "#filter-all"
     },
 
     initialize: function() {
-      this.selectedFilter = this.options.selectedFilter || "all";
-
-      // Update the UI on collection resets
+      this.selectedFilter = this.options.selectedFilter || { attr: "all" };
       this.listenTo(this.collection, "reset", this.updateCurrentButton);
     },
 
@@ -30,27 +32,53 @@ SensorApp.module("SensorFilters", function(SensorFilters, App, Backbone, Marione
     },
 
     updateCurrentButton: function() {
+      var key,
+          filter = this.selectedFilter;
       _.each(this.ui, function($button) {
         $button.removeClass("current");
       });
-      this.ui[this.selectedFilter].addClass("current");
+      key = filter.attr + ((filter.value !== undefined) ? "_" + filter.value : "");
+      this.ui[key].addClass("current");
     },
 
     filterByActive: function() {
-      this.selectedFilter = "active";
-      App.vent.trigger("sensor:filter:active");
+      this.selectedFilter = { 
+        attr: "active",
+        value: true
+      };
+      App.vent.trigger("sensor:filter:active", true);
     },
 
     filterByInactive: function() {
-      this.selectedFilter = "inactive";
-      App.vent.trigger("sensor:filter:inactive");
+      this.selectedFilter = { 
+        attr: "active",
+        value: false
+      };
+      App.vent.trigger("sensor:filter:active", false);
+    },
+
+    filterBySolar: function() {
+      this.selectedFilter = { 
+        attr: "type",
+        value: "solar"
+      };
+      App.vent.trigger("sensor:filter:type", "solar");
+    },
+
+    filterByWind: function() {
+      this.selectedFilter = { 
+        attr: "type",
+        value: "wind"
+      };
+      App.vent.trigger("sensor:filter:type", "wind");
     },
 
     filterByAll: function() {
-      this.selectedFilter = "all";
+      this.selectedFilter = { attr: "all" };
       App.vent.trigger("sensor:filter:all");
     }
   });
+
 
   this.Controller = {
 

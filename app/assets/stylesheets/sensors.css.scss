@@ -107,7 +107,7 @@ form .controls {
   position: relative;
   padding-bottom: 10px;
   border-bottom: $border;
-  margin-bottom: 25px;
+  margin-bottom: 40px;
   .header-title {
     display: inline;
   }
@@ -128,8 +128,14 @@ form .controls {
   top: 1px;
 }
 
+.filter-group {
+  float: right;
+  margin-left: 25px;
+}
+
 .sensor-filters {
   float: right;
+  margin-bottom: 10px;
 }
 
 .current {
