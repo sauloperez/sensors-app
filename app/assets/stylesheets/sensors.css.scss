@@ -141,3 +141,23 @@ form .controls {
 .current {
   @extend .btn-primary;
 }
+
+.column {
+  float: left;
+}
+
+#sensor-show-aside {
+  @extend .column;
+  width: 50%;
+}
+
+#sensor-show-main {
+  @extend .column;
+  width: 50%;
+  padding-left: 40px;
+}
+
+#map {
+  height: 470px;
+  width: 570px;
+}

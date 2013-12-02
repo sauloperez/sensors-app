@@ -16,4 +16,5 @@
 //= require underscore
 //= require backbone
 //= require backbone.marionette
+//= require backbone.googlemaps.js
 //= require_tree .

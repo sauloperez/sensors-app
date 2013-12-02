@@ -42,10 +42,11 @@ SensorApp.module("SensorFilters", function(SensorFilters, App, Backbone, Marione
     },
 
     // It accepts either an event object or an attr-value hash
+    // or an empty object in case no filters have to be applied
     filterBy: function(options) {
       var $button, attr, value;
       this.selectedFilter = {};
-      
+
       if (options) {
         // An event is passed in
         if (options.currentTarget) {

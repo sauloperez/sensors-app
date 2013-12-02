@@ -18,6 +18,16 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     className: "no-data not-found"
   });
 
+  this.SensorShowLayout = Marionette.Layout.extend({
+    template: "app/templates/sensors/show_layout",
+    className: "sensor-show-layout",
+
+    regions: {
+      mainRegion: "#sensor-show-main",
+      asideRegion: "#sensor-show-aside"
+    }
+  });
+
   this.SensorView = Marionette.ItemView.extend({
     template: "app/templates/sensors/show",
     tagName: "div",

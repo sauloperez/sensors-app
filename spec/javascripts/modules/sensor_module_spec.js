@@ -2,6 +2,7 @@ describe("SensorApp.Sensor", function() {
   var module;
 
   beforeEach(function() {
+    SpecHelpers.mockGoogleMaps();
     module = window.SensorApp.Sensor;
   });
 

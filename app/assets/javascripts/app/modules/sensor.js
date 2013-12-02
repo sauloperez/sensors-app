@@ -104,12 +104,32 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     },
 
     show: function(id) {
-      var contentView = this._getShowSensorView(id);
-          headerView = new App.SensorViews.SensorHeaderView({
+      var headerView = new App.SensorViews.SensorHeaderView({
             model: this.filteredCollection.get(id)
           }),
+          contentView, 
+          mainView, 
+          asideView;
+
+      var model = this.filteredCollection.get(id);
+      if (!model) {
+        contentView = new App.SensorViews.NotFoundSensorView();
+        this._updateLayout(headerView, contentView);
+      }
+      else {
+        contentView = new App.SensorViews.SensorShowLayout();
+        this._updateLayout(headerView, contentView);
+
+        mainView = new App.SensorViews.SensorView({ model: model });
+        contentView.mainRegion.show(mainView);
+
+        // Show a map in the aside region
+        App.SensorMaps.start({
+          region: contentView.asideRegion,
+          location: [model.get('latitude'), model.get('longitude')]
+        });
+      }
       
-      this._updateLayout(headerView, contentView);
       this._hideFilters();
     },
 
@@ -215,11 +235,7 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     },
 
     _getShowSensorView: function(id) {
-      var model = this.filteredCollection.get(id);
-      if (!model) {
-        return new App.SensorViews.NotFoundSensorView();
-      }
-      return new App.SensorViews.SensorView({ model: model });
+      
     },
 
     _hideFilters: function() {
