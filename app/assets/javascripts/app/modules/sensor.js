@@ -126,7 +126,7 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
         // Show a map in the aside region
         App.SensorMaps.start({
           region: contentView.asideRegion,
-          location: [model.get('latitude'), model.get('longitude')]
+          model: model
         });
       }
       
@@ -134,16 +134,27 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     },
 
     edit: function(id) {
-      var contentView = this._getFormSensorView(id),
+      var model = this.filteredCollection.get(id),
+          formView = this._getFormSensorView(id),
           headerView = new App.SensorViews.SensorHeaderView({
-            model: this.filteredCollection.get(id)
+            model: model
           });
 
-      contentView.model.on("sync", function() {
+      formView.model.on("sync", function() {
         Backbone.history.navigate("/", true);
       });
+
+      var layout = new App.SensorViews.SensorShowLayout();
+      this._updateLayout(headerView, layout);
+
+      layout.mainRegion.show(formView);
+
+      // Show a map in the aside region
+      App.SensorMaps.start({
+        region: layout.asideRegion,
+        model: model
+      });
       
-      this._updateLayout(headerView, contentView);
       this._hideFilters();
     },
 

@@ -40,7 +40,9 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     className: "edit-sensor",
 
     events: {
-      "submit form": "saveSensor"
+      "submit form": "saveSensor",
+      "focusout #sensor-latitude": "updateModel",
+      "focusout #sensor-longitude": "updateModel"
     },
 
     ui: {
@@ -58,6 +60,22 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
       }
       else {
         this.listenTo(this.model, "invalid", this.onInvalidModel);
+      }
+    },
+
+    updateModel: function() {
+      formValues = this._getFormValues();
+      this._removeErrors();
+
+      // Error handling
+      onError = function(model, xhr, options) {
+        var errors = JSON.parse(xhr.responseText);
+        self._displayErrors(errors);
+      };
+
+      // Persist the model
+      if (!this.collection) {
+        this.model.set(formValues, { error: onError });  
       }
     },
 

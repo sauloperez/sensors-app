@@ -7,21 +7,34 @@ SensorApp.module("SensorMaps", function(SensorMaps, App, Backbone, Marionette, $
     id: "map",
 
     initialize: function(options) {
-      this.model = new Backbone.GoogleMaps.Location({
-        lat: this.options.location[0],
-        lng: this.options.location[1]
+      this.listenTo(this.model, "change:latitude", this.updateMapModel);
+      this.listenTo(this.model, "change:longitude", this.updateMapModel);
+
+      this.mapModel = new Backbone.GoogleMaps.Location({
+        lat: this.model.get('latitude'),
+        lng: this.model.get('longitude')
       });
+    },
+
+    updateMapModel: function(model, value) {
+      this.map.panTo(new google.maps.LatLng(this.model.get('latitude'), this.model.get('longitude')));
+      if (model.changed.latitude) {
+        this.mapModel.set('lat', value);
+      }
+      else {
+        this.mapModel.set('lng', value);
+      }
     },
 
     onRender: function() {
       var self = this;
       this.map = new google.maps.Map(this.el, {
-        center: new google.maps.LatLng(this.options.center[0], this.options.center[1]),
+        center: new google.maps.LatLng(this.model.get('latitude'), this.model.get('longitude')),
         zoom: 6,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
       this.markerView = new Backbone.GoogleMaps.MarkerView({
-        model: self.model,
+        model: self.mapModel,
         map: self.map
       });
       this.markerView.render();
@@ -42,17 +55,14 @@ SensorApp.module("SensorMaps", function(SensorMaps, App, Backbone, Marionette, $
   this.Controller = {
     start: function(options) {
       if (!options.region) throw new Error("A region to render in must be specified");
-      if (!options.location) throw new Error("A center location must be specified");
+      if (!options.model) throw new Error("A model must be specified");
 
       this.region = options.region;
-      this.location = options.location;
+      this.model = options.model;
     },
 
     showMap: function() {
-      var mapView = new SensorMaps.MapView({ 
-        center: this.location,
-        location: this.location
-      });
+      var mapView = new SensorMaps.MapView({ model: this.model });
       this.region.show(mapView);
 
       // Fixes grey box when rendered while not being attached to the DOM

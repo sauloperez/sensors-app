@@ -124,6 +124,7 @@
 
       for(var event in mapEvents) {
         var handler = mapEvents[event];
+        _.bindAll(this, handler);
         google.maps.event.addListener(this.gOverlay, event, this[handler]);
       }
     },
