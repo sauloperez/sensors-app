@@ -67,15 +67,8 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
       formValues = this._getFormValues();
       this._removeErrors();
 
-      // Error handling
-      onError = function(model, xhr, options) {
-        var errors = JSON.parse(xhr.responseText);
-        self._displayErrors(errors);
-      };
-
-      // Persist the model
       if (!this.collection) {
-        this.model.set(formValues, { error: onError });  
+        this.model.set(formValues, { validate: true });  
       }
     },
 
@@ -122,6 +115,11 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
       };
     },
 
+    _onError: function(model, xhr, options) {
+      var errors = JSON.parse(xhr.responseText);
+      self._displayErrors(errors);
+    }, 
+
     saveSensor: function(event) {
       var self = this;
       event.preventDefault();
@@ -129,19 +127,13 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
       formValues = this._getFormValues();
       this._removeErrors();
 
-      // Error handling
-      onError = function(model, xhr, options) {
-        var errors = JSON.parse(xhr.responseText);
-        self._displayErrors(errors);
-      };
-
       // Persist the model
       if (!this.collection) {
-        this.model.save(formValues, { error: onError });  
+        this.model.save(formValues, { error: this._onError });  
       }
       // ...or just create a new model within the collection
       else {
-        var model = this.collection.create(formValues, { wait: true, error: onError });
+        var model = this.collection.create(formValues, { wait: true, error: this._onError });
         if (model.validationError) this.trigger("invalid", model);
       }
     }
