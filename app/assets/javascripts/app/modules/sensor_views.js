@@ -66,10 +66,7 @@ SensorApp.module("SensorViews", function(SensorViews, App, Backbone, Marionette,
     updateModel: function() {
       formValues = this._getFormValues();
       this._removeErrors();
-
-      if (!this.collection) {
-        this.model.set(formValues, { validate: true });  
-      }
+      this.model.set(formValues, { validate: true });  
     },
 
     onInvalidModel: function(model) {

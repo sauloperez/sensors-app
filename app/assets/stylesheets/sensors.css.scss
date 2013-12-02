@@ -149,6 +149,7 @@ form .controls {
 #sensor-show-aside {
   @extend .column;
   width: 50%;
+  overflow: hidden;
 }
 
 #sensor-show-main {
@@ -159,5 +160,5 @@ form .controls {
 
 #map {
   height: 470px;
-  width: 570px;
+  width: 470px;
 }

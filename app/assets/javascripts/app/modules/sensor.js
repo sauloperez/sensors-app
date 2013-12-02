@@ -161,9 +161,19 @@ SensorApp.module("Sensor", function(Sensor, App, Backbone, Marionette, $, _) {
     create: function() {
       var self = this,
           headerView = new App.SensorViews.SensorHeaderView(),
-          contentView = this._getFormSensorView();
+          formView = this._getFormSensorView();
 
-      this._updateLayout(headerView, contentView);      
+      var layout = new App.SensorViews.SensorShowLayout();
+      this._updateLayout(headerView, layout);
+
+      layout.mainRegion.show(formView);
+
+      // Show a map in the aside region
+      App.SensorMaps.start({
+        region: layout.asideRegion,
+        model: formView.model
+      });
+
       this._hideFilters();
     },
 

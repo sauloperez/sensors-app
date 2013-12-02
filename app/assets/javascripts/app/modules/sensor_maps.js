@@ -7,37 +7,53 @@ SensorApp.module("SensorMaps", function(SensorMaps, App, Backbone, Marionette, $
     id: "map",
 
     initialize: function(options) {
-      this.listenTo(this.model, "change:latitude", this.updateMapModel);
-      this.listenTo(this.model, "change:longitude", this.updateMapModel);
+      this.listenTo(this.model, "change", this.updateMapModel);
+
+      this.defaultLatLng = [41.38506, 2.17340];
 
       this.mapModel = new Backbone.GoogleMaps.Location({
-        lat: this.model.get('latitude'),
-        lng: this.model.get('longitude')
+        lat: this.model.get('latitude') || this.defaultLatLng[0],
+        lng: this.model.get('longitude') || this.defaultLatLng[1]
       });
     },
 
     updateMapModel: function(model, value) {
-      this.map.panTo(new google.maps.LatLng(this.model.get('latitude'), this.model.get('longitude')));
+      var self = this;
       if (model.changed.latitude) {
-        this.mapModel.set('lat', value);
+        this.mapModel.set('lat', model.changed.latitude);
       }
       else {
-        this.mapModel.set('lng', value);
+        this.mapModel.set('lng', model.changed.longitude);
       }
+
+      // Render a marker if coordinates weren't provided (create action)
+      if (!this.markerView && this.model.get('latitude') && this.model.get('longitude')) {
+        this.markerView = new Backbone.GoogleMaps.MarkerView({
+          model: self.mapModel,
+          map: self.map
+        });
+        this.markerView.render();
+      }
+      this.map.panTo(new google.maps.LatLng(this.mapModel.get('lat'), this.mapModel.get('lng')));
     },
 
     onRender: function() {
       var self = this;
       this.map = new google.maps.Map(this.el, {
-        center: new google.maps.LatLng(this.model.get('latitude'), this.model.get('longitude')),
+        center: new google.maps.LatLng(this.model.get('latitude') || this.defaultLatLng[0], 
+                      this.model.get('longitude') || this.defaultLatLng[1]),
         zoom: 6,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
-      this.markerView = new Backbone.GoogleMaps.MarkerView({
-        model: self.mapModel,
-        map: self.map
-      });
-      this.markerView.render();
+
+      // Only create the marker if coordinates are provided
+      if (this.model.get('latitude') && this.model.get('longitude')) {
+        this.markerView = new Backbone.GoogleMaps.MarkerView({
+          model: self.mapModel,
+          map: self.map
+        });
+        this.markerView.render();
+      }
     },
 
     onClose: function() {
